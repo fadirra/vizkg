@@ -1,0 +1,11 @@
+pandas >= 1.0.1
+SPARQLWrapper
+matplotlib
+seaborn
+imageio
+plotly==4.14.3
+networkx
+folium
+anytree
+wordcloud
+IPython
