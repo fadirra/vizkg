@@ -15,13 +15,13 @@ install_reqs = [
 ]
 
 # Get the long description from the README file
-with codecs.open(os.path.join(os.path.dirname(__file__), 'README.md'), encoding='utf-8') as f:
+with open(os.path.join(os.path.dirname(__file__), 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
     name='VizKG',
     packages=['VizKG', 'VizKG.charts', 'VizKG.utils'],
-    version='0.0.0.1',
+    version='0.0.0.2',
     description='Visualization library for SPARQL query results',
     long_description=long_description,
     long_description_content_type="text/markdown",

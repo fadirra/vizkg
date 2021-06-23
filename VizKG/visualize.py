@@ -1,12 +1,11 @@
 import sys
-
-from .utils import set_chart, set_dataframe
+import random
+from .utils import set_chart, set_dataframe, generate_charts_dictionary
 from .charts import Chart
-from .chartdict import chartdict
 
-class vizKG:
+class VizKG:
   """
-  Instantiate vizKG object.
+  Instantiate VizKG object.
   
   Attributes:
       sparql_query (string): The SPARQL query to retrieve.
@@ -49,13 +48,19 @@ class vizKG:
       Plot visualization with suitable corresponding chart
 
       """
+      chartdict = generate_charts_dictionary()
       chart_list = chartdict.keys()
       chart = Chart(self.dataframe, self.kwargs)
-      candidate_visualization = chart.candidate_form()
+      candidate_visualization = list(chart.candidate_form())
       figure = None
       if len(self.dataframe) != 0:
         if self.chart not in chart_list:
-          print(f"No matching chart found instead use one of the available chart: {candidate_visualization}")
+          print(f"According to VizKG analysis, the following visualizations can be displayed: {candidate_visualization}")
+          list_of_random_items = random.sample(candidate_visualization, 2)
+          print(f"We show below two of them {tuple(list_of_random_items)} as illustrations: ")
+          for idx,name in enumerate(list_of_random_items):
+            figure = chartdict[name.lower()](self.dataframe, self.kwargs)
+            figure.plot()         
         else:
           try:
             if self.chart in chartdict:
@@ -65,4 +70,4 @@ class vizKG:
       else:
         print("No matching records found")
 
-sys.modules[__name__] = vizKG
+sys.modules[__name__] = VizKG

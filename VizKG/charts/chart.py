@@ -87,51 +87,54 @@ class Chart:
         """
 
         candidate_visualization = []
-        dimension_column = [name for name in self.dataframe.columns if not name.startswith(tuple(['picture', 'coordinate']))]
 
         #Add to candidate visualization
         if 'picture' in self.dataframe.columns:
             candidate_visualization.append('ImageGrid')
         if 'coordinate' in self.dataframe.columns:
             candidate_visualization.append('Map')
+        if len(self._label_column) >= 2 :
+            candidate_visualization.append('Dimensions')   
+        if len(self._numerical_column) == 2:
+            candidate_visualization.append('ScatterChart')         
         if len(self._date_column) >= 1 and len(self._label_column) >= 1:
             candidate_visualization.append('Timeline')
         if len(self._label_column) >= 2 and len(self._uri_column) >= 2:
             candidate_visualization.append('Graph')
             candidate_visualization.append('Tree')
-        if len(dimension_column) > 2 :
-            candidate_visualization.append('Dimensions')
-        if len(self._numerical_column) >= 3:
+        if 3 <= len(self._numerical_column) < len(self.dataframe):
             candidate_visualization.append('HeatMap')
-        if len(self._label_column) >= 1:
+        if len(self._numerical_column) >= 3 and len(self._label_column) == 1 and len(self.dataframe) <= 3:
+            candidate_visualization.append('RadarChart')
+        if len(self._numerical_column) < len(self._label_column) >= 1:
             candidate_visualization.append('WordCloud')
         if len(self._label_column) >= 1 and len(self._date_column) >= 1 and len(self._numerical_column) >= 1:
             candidate_visualization.append('AreaChart')
         if len(self._date_column) >= 1 and len(self._numerical_column) >= 2:
             candidate_visualization.append('StackedAreaChart')
-        if len(self._numerical_column) >= 2:
-            candidate_visualization.append('ScatterChart')
         if len(self._date_column) >= 1 and len(self._numerical_column) >= 1:
             candidate_visualization.append('LineChart')
-        if len(self._label_column) <= 2 and len(self._numerical_column) == 1:
+        if 1 <= len(self._label_column) <= 2 and len(self._numerical_column) == 1 < len(self.dataframe):
             candidate_visualization.append('BarChart')
-        if len(self._label_column) >= 2 and len(self._numerical_column) >= 1:
+        if 1 <= len(self._numerical_column) < len(self._label_column) >= 2 :
             candidate_visualization.append('TreeMap')
             candidate_visualization.append('SunBurstChart')
-        if len(self._numerical_column) >= 1:
+        if len(self._numerical_column) >= 1 < len(self.dataframe):
             candidate_visualization.append('Histogram')
             candidate_visualization.append('DensityPlot')
-        if len(self._label_column) >= 1 and len(self._numerical_column) >= 1:
+        if len(self._numerical_column) == 1 and (len(self._label_column) == 1 or len(self._uri_column) == 1):
+            candidate_visualization.append('BubbleChart')
+        if len(self._label_column) >= 1 and len(self._numerical_column) >= 1 < len(self.dataframe):
             candidate_visualization.append('PieChart')
             candidate_visualization.append('DonutChart')
-            candidate_visualization.append('BoxPlot')
-            candidate_visualization.append('ViolinPlot')
-            candidate_visualization.append('BubbleChart')
-            candidate_visualization.append('TreeMap')
-            candidate_visualization.append('SunBurstChart')
+            if min(list(self.dataframe[self._label_column[0]].value_counts())) >= 2:
+                candidate_visualization.append('BoxPlot')
+                candidate_visualization.append('ViolinPlot')
         candidate_visualization.append('Table')
 
-        return set(candidate_visualization)
+        candidate_visualization = list(set(candidate_visualization))
+
+        return candidate_visualization
 
     def _is_label_column_exist(self, request=1):
         """
@@ -210,6 +213,21 @@ class Chart:
             print(f"Missing {str(miss)} required uri column as identifiers, instead use one of this available chart: {self.candidate_viz}")
         
         return is_exist
+
+    def _get_label_from_uri(self, uri_column):
+        """
+        Add and get label column (name) from uri (extract name from the last slash in uri)
+
+        Parameters:
+            (string) uri_column: Name of uri column
+        
+        Returns:
+            (string) column_name: Name of label column 
+        """
+        column_name = (f"{uri_column}Label")
+        self.dataframe[column_name] = self.dataframe[uri_column].apply(lambda x: x.split("/")[-1])
+
+        return column_name
 
     def _add_candidate_info(self):
         """

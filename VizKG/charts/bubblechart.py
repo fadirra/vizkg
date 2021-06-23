@@ -23,10 +23,14 @@ class BubbleChart(Chart):
         """
         numerical_label = None
         label_name = None
-        if self._is_numerical_column_exist:
+        if self._is_numerical_column_exist(1):
             numerical_label = self._numerical_column[0]
-            if self._is_label_column_exist:
+            if len(self._label_column) > 0:
                 label_name = self._label_column[0]
+            elif len(self._uri_column) > 0:
+                label_name = self._get_label_from_uri(self._uri_column[0])
+            else:
+                self._is_label_column_exist(1)
         
         return numerical_label, label_name
 
@@ -192,6 +196,6 @@ class DrawBubbleChart:
         ax.axis("off")
         ax.relim()
         ax.autoscale_view()
-        ax.set_title('Plot')
+        # ax.set_title('Plot')
 
         plt.show()

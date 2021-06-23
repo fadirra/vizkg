@@ -19,14 +19,10 @@ class Dimensions(Chart):
             (list) dataframe_to_list: list of dataframe
         """
         dataframe_to_list = None
-        dimension_column = [name for name in self.dataframe.columns if not name.startswith(tuple(['pic', 'coordinate']))]
-        if len(dimension_column) >= 2:
+        if self._is_label_column_exist(2):
             dataframe_to_list = []
-            for column in self.dataframe:
+            for column in self._label_column:
                 dataframe_to_list += self.dataframe[column].tolist()
-        else:
-            print("'Dimensions' visualization needs atleast 2 attributes of dataframe")
-            print(self._add_candidate_info)
         
         return dataframe_to_list    
 

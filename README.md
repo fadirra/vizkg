@@ -2,29 +2,6 @@
 
 Visualization wrapper for SPARQL query results
 
-Supported visualizations so far:
-- Table
-- ImageGrid
-- Map
-- Tree
-- Timeline
-- Dimensions
-- Graph
-- WordCloud
-- Tree Map
-- SunBurst Chart
-- Line Chart
-- Bar Chart
-- Area Chart
-- StackedArea Chart
-- Histogram
-- Density Plot
-- Box Plot
-- Violin Plot
-- Bubble Chart
-- Scatter Chart
-- HeatMap
-
 ## Installation
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install VizKG.
 
@@ -52,3 +29,28 @@ sparql_service_url = "https://query.wikidata.org/sparql"
 chart = vkg(sparql_query=sparql_query, sparql_service_url=sparql_service_url, chart='imageGrid')
 chart.plot()
 ```
+
+Supported visualizations so far:
+- Table
+- ImageGrid
+- Map
+- Tree
+- Timeline
+- Dimensions
+- Graph
+- WordCloud
+- Tree Map
+- SunBurst Chart
+- Line Chart
+- Bar Chart
+- Area Chart
+- StackedArea Chart
+- Histogram
+- Density Plot
+- Box Plot
+- Violin Plot
+- Bubble Chart
+- Scatter Chart
+- HeatMap
+- Radar Chart
+

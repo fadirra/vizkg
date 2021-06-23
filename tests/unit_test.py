@@ -1,7 +1,7 @@
 import unittest
 import VizKG.visualize as vkg
 from VizKG.charts import Chart
-from VizKG.chartdict import chartdict as dict_chart
+from VizKG.utils import generate_charts_dictionary
 
 class VizKGTestCase(unittest.TestCase):
 
@@ -64,10 +64,11 @@ class VizKGTestCase(unittest.TestCase):
         self.assertListEqual(label_column, exp_label_column)
 
     def test_candidate_viz(self):
+        dict_chart = generate_charts_dictionary()
         charts = list(dict_chart.keys())
         candidate_viz = [name.lower() for name in self.chart.candidate_viz]
         diff1 = sorted(list(set(charts) ^ set(candidate_viz)))
-        exp_diff = sorted(['scatterchart', 'barchart', 'stackedareachart', 'heatmap'])
+        exp_diff = sorted(['scatterchart', 'barchart', 'stackedareachart', 'heatmap','bubblechart', 'radarchart'])
         self.assertListEqual(diff1, exp_diff)
 
 
