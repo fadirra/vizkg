@@ -22,3 +22,4 @@ from .barchart import BarChart
 from .linechart import LineChart
 from .areachart import AreaChart
 from .stackedarechart import StackedAreaChart
+from .radarchart import RadarChart
