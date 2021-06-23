@@ -1,10 +1,29 @@
 import re
 import pandas as pd
+import importlib, inspect
 from pandas import json_normalize
 from SPARQLWrapper import SPARQLWrapper
 from difflib import SequenceMatcher
 
-from VizKG.chartdict import chartdict
+def generate_charts_dictionary():
+    """
+        Get dictionary of chart type
+
+        Returns:
+            (dict) chartdict: dictionary of visualization chart type
+    """
+    keys = []
+    values = []
+    for name, mod in inspect.getmembers(importlib.import_module("VizKG.charts"), inspect.ismodule):
+            keys.append(name)
+
+    for name, cls in inspect.getmembers(importlib.import_module("VizKG.charts"), inspect.isclass):
+            values.append(cls)
+
+    chartdict = {keys[i]: values[i] for i in range(len(values))}
+    chartdict.pop("chart")
+
+    return chartdict    
 
 def set_chart(chart_input):
     """
@@ -16,8 +35,8 @@ def set_chart(chart_input):
     Returns:
         (list) chart: The available chart   
     """
-    chart = None
-    charts = chartdict.keys()
+    chart = generate_charts_dictionary()
+    charts = chart.keys()
 
     if chart_input is not None:
         lowercase_input = chart_input.lower()
