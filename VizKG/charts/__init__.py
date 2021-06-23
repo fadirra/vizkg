@@ -17,7 +17,7 @@ from .violinplot import ViolinPlot
 from .donutchart import DonutChart
 from .piechart import PieChart
 from .sunburstchart import SunBurstChart
-from .treemaps import TreeMap
+from .treemap import TreeMap
 from .barchart import BarChart
 from .linechart import LineChart
 from .areachart import AreaChart
