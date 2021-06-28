@@ -1,5 +1,7 @@
 from .chart import Chart
 import plotly.figure_factory as ff
+from IPython.display import display
+import pandas as pd
 
 class Table(Chart):
     def __init__(self, dataframe, kwargs):
@@ -15,5 +17,9 @@ class Table(Chart):
         """
         Generate table visualization
         """
-        fig = ff.create_table(self.dataframe)
-        fig.show()    
+        if len(self.dataframe) > 1000 :
+            fig = ff.create_table(self.dataframe)
+            fig.show()
+        else:
+            with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+                display(self.dataframe)    

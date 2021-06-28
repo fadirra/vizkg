@@ -2,6 +2,7 @@ from .chart import Chart
 import matplotlib.pyplot as plt
 from imageio import imread
 import time
+import warnings
 
 class ImageGrid(Chart):
     def __init__(self, dataframe, kwargs):
@@ -21,14 +22,13 @@ class ImageGrid(Chart):
             (list) label_name: list of image label
         """
         label_name = None
-        if hasattr(self.dataframe, 'picture'):
+        if self._is_img_uri_column_exist(1):
             if len(self._label_column) > 0:
                 label_name = self._label_column[0]
             else:
                 pass
         else:
-            print(f"Data has no attribute 'picture'")
-            print(self._add_candidate_info)
+            label_name = None
         
         return label_name
 
@@ -36,15 +36,25 @@ class ImageGrid(Chart):
         """
         Generate Image Grid visualization
         """
+        if self._is_img_uri_column_exist(1):
+            self.draw_imagegrid()
+        else:
+            pass
+
+    def draw_imagegrid(self):
+
         label_name = self._check_requirements()
-        pic = [i for i in self.dataframe.picture]
-        num_pic = len(pic)
         columns = 4
         width = 20
+
+        data_to_pic = self.truncate_data()
+
+        pic = [i for i in data_to_pic.picture]
+        num_pic = len(pic)
         height = max(20, int(num_pic/columns) * 20)
 
         if label_name is not None:
-            item_label = [i for i in self.dataframe[label_name]]
+            item_label = [i for i in data_to_pic[label_name]]
             plt.figure(figsize=(20,20))
             for i, url in enumerate(pic):
                 plt.subplot(int(num_pic / columns + 1), columns, i + 1)
@@ -71,4 +81,16 @@ class ImageGrid(Chart):
                     time.sleep(5)
                     image = imread(url)
                     plt.imshow(image) #, plt.xticks([]), plt.yticks([])
-                    plt.axis('off')
+                    plt.axis('off')    
+
+    def truncate_data(self):
+
+        data = self.dataframe
+        if len(self.dataframe) > 200 :
+            data = data.dataframe[:100]
+            print(f"Time limit exceed. Showing only top of 200 pictures")
+        else:
+            pass
+
+        return data
+        

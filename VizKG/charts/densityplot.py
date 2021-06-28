@@ -41,10 +41,30 @@ class DensityPlot(Chart):
 
         if numerical_label is not None:
             if label_name is not None:
-                sns.displot(data=self.dataframe, x=numerical_label, hue=label_name, kind="kde")
-                pass
-            else:
-                sns.displot(data=self.dataframe, x=numerical_label, kind="kde")
-                pass               
+                self.drawplot(numerical_label, label_name)               
+
+    def filter_data(self):
+
+        var_name = list(self.dataframe.columns)
+
+        filter_date_column = list(set(var_name) - set(self._date_column))
+
+        data = self.dataframe[filter_date_column]
+
+        return data
+
+    def drawplot(self, numerical_label, label_name):
+
+        filter_data = self.filter_data()
+
+        if label_name is not None:
+            sns.displot(data=filter_data, x=numerical_label, hue=label_name, kind="kde")
+            pass
+        else:
+            sns.displot(data=filter_data, x=numerical_label, kind="kde")
+            pass
+        
+
+
 
 

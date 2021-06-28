@@ -20,6 +20,7 @@ class Chart:
         self._date_column = self._set_date_column()
         self._numerical_column = self._set_numerical_column()
         self._label_column = self._set_label_column()
+        
         self.candidate_viz = self.candidate_form()
 
     def _set_label_column(self):
@@ -119,7 +120,7 @@ class Chart:
         if 1 <= len(self._numerical_column) < len(self._label_column) >= 2 :
             candidate_visualization.append('TreeMap')
             candidate_visualization.append('SunBurstChart')
-        if len(self._numerical_column) >= 1 < len(self.dataframe):
+        if len(self._numerical_column) >= 1 < len(self.dataframe) and len(self._date_column) == 0:
             candidate_visualization.append('Histogram')
             candidate_visualization.append('DensityPlot')
         if len(self._numerical_column) == 1 and (len(self._label_column) == 1 or len(self._uri_column) == 1):
@@ -136,6 +137,24 @@ class Chart:
 
         return candidate_visualization
 
+    def _is_var_exist(self, column, request=1):
+        """
+        Check if list exist return True if exist
+
+        Parameters:
+            (int) request:number of required column
+        
+        Returns:
+            (boolena) is_exist: True if list exist
+        """
+        is_exist = False
+        if len(column) >= request:
+            is_exist = True
+        else:
+            is_exist = False
+        
+        return is_exist
+
     def _is_label_column_exist(self, request=1):
         """
         Check if list exist return True if exist
@@ -151,7 +170,7 @@ class Chart:
             is_exist = True
         else:
             miss = request - len(self._label_column)
-            print(f"Missing {str(miss)} required label column, instead use one of this available chart: {self.candidate_viz}")
+            print(f"Missing {str(miss)} required label variable, instead use one of this available chart: {self.candidate_viz}")
 
         return is_exist
 
@@ -170,7 +189,7 @@ class Chart:
             is_exist = True
         else:
             miss = request - len(self._date_column)
-            print(f"Missing {str(miss)} required date column, instead use one of this available chart: {self.candidate_viz}")
+            print(f"Missing {str(miss)} required date variable, instead use one of this available chart: {self.candidate_viz}")
         
         return is_exist
     
@@ -190,7 +209,7 @@ class Chart:
             is_exist = True
         else:
             miss = request - len(self._numerical_column)
-            print(f"Missing {str(miss)} required numerical column, instead use one of this available chart: {self.candidate_viz}")
+            print(f"Missing {str(miss)} required numerical variable, instead use one of this available chart: {self.candidate_viz}")
         
         return is_exist
 
@@ -210,9 +229,49 @@ class Chart:
             is_exist = True
         else:
             miss = request - len(self._uri_column)
-            print(f"Missing {str(miss)} required uri column as identifiers, instead use one of this available chart: {self.candidate_viz}")
+            print(f"Missing {str(miss)} required uri variable as identifiers, instead use one of this available chart: {self.candidate_viz}")
         
         return is_exist
+
+    def _is_img_uri_column_exist(self, request=1):
+        """
+        Check if list exist return True if exist
+
+        Parameters:
+            (int) request:number of required column
+        
+        Returns:
+            (boolena) is_exist: True if list exist
+        """
+        is_exist = False
+        candidate_form = self.candidate_viz
+        miss = request
+        if hasattr(self.dataframe, 'picture'):
+            is_exist = True
+        else:
+            print(f"Missing {str(miss)} required image variable, instead use one of this available chart: {self.candidate_viz}")
+        
+        return is_exist  
+
+    def _is_coordinate_exist(self, request=1):
+        """
+        Check if list exist return True if exist
+
+        Parameters:
+            (int) request:number of required column
+        
+        Returns:
+            (boolena) is_exist: True if list exist
+        """
+        is_exist = False
+        candidate_form = self.candidate_viz
+        miss = request
+        if hasattr(self.dataframe, 'coordinate'):
+            is_exist = True
+        else:
+            print(f"Missing {str(miss)} required coordinate variable, instead use one of this available chart: {self.candidate_viz}")
+        
+        return is_exist  
 
     def _get_label_from_uri(self, uri_column):
         """

@@ -27,29 +27,22 @@ class Map(Chart):
             else:
                 popup_data = new_data[self._label_column[0]]
         else:
-            print(f"Data has no attribute 'coordinate'")
-            print(self._add_candidate_info)
+            popup_data = None
         
         return popup_data
 
-    def _add_point(self):
-        """
-        Add coordinate column for coordinate folium map
-
-        Returns:
-            (pandas.Dataframe): Dataframe with new coordinate column
-        """
-        data = self.dataframe.copy()    
-        #Get coordinate data (latitude and longitude)
-        data['coordinate_point'] = data['coordinate']
-        dataframe_new = data.apply(lambda S:S.str.strip('Point()'))
-        new = dataframe_new[dataframe_new.columns[-1]].str.split(" ", n = 1, expand = True)
-        new = new.astype('float64')
-        data['coordinate'] = new.apply(lambda x: list([x[1], x[0]]),axis=1)
-
-        return data
 
     def plot(self):
+        """
+        Generate Image Grid visualization
+        """
+        if self._is_coordinate_exist(1):
+            self.draw_map()
+        else:
+            pass
+
+
+    def draw_map(self):
         """
         Generate map visualization
         """
@@ -68,3 +61,33 @@ class Map(Chart):
                 ).add_to(maps)
 
             display(maps)                
+
+    def _add_point(self):
+        """
+        Add coordinate column for coordinate folium map
+
+        Returns:
+            (pandas.Dataframe): Dataframe with new coordinate column
+        """
+        copy_data = self.dataframe.copy()
+
+        data = self.truncate_data(copy_data)    
+        #Get coordinate data (latitude and longitude)
+        data['coordinate_point'] = data['coordinate']
+        dataframe_new = data.apply(lambda S:S.str.strip('Point()'))
+        new = dataframe_new[dataframe_new.columns[-1]].str.split(" ", n = 1, expand = True)
+        new = new.astype('float64')
+        data['coordinate'] = new.apply(lambda x: list([x[1], x[0]]),axis=1)
+
+        return data
+
+    def truncate_data(self, data):
+
+        if len(data) > 2000 :
+            truncate_data = data.head(2000)
+            data = truncate_data
+            print(f"Time limit exceed... Showing only 2000 coordinates")
+        else:
+            pass
+
+        return data

@@ -63,15 +63,6 @@ class VizKGTestCase(unittest.TestCase):
         exp_label_column = ["itemLabel",  "linkToLabel", "propLabel"]
         self.assertListEqual(label_column, exp_label_column)
 
-    def test_candidate_viz(self):
-        dict_chart = generate_charts_dictionary()
-        charts = list(dict_chart.keys())
-        candidate_viz = [name.lower() for name in self.chart.candidate_viz]
-        diff1 = sorted(list(set(charts) ^ set(candidate_viz)))
-        exp_diff = sorted(['scatterchart', 'barchart', 'stackedareachart', 'heatmap','bubblechart', 'radarchart'])
-        self.assertListEqual(diff1, exp_diff)
-
-
 if __name__ == '__main__':
 
     unittest.main()

@@ -4,6 +4,7 @@ import importlib, inspect
 from pandas import json_normalize
 from SPARQLWrapper import SPARQLWrapper
 from difflib import SequenceMatcher
+from .chartdict import chartdict
 
 def generate_charts_dictionary():
     """
@@ -35,30 +36,33 @@ def set_chart(chart_input):
     Returns:
         (list) chart: The available chart   
     """
-    chart = generate_charts_dictionary()
+    chart = chartdict #generate_charts_dictionary()
     charts = chart.keys()
 
     if chart_input is not None:
         lowercase_input = chart_input.lower()
-        
         highest_prob = 0
-        for name in charts:
-            prob_now = SequenceMatcher(None, lowercase_input, name).ratio()
-            if prob_now > highest_prob and prob_now >= 0.5:
-                highest_prob = prob_now
-                chart = name
 
         if lowercase_input in charts:
             chart = lowercase_input
-
-        if chart is None:
-            raise Exception("No available chart")
-
+        else:    
+            for name in charts:
+                prob_now = SequenceMatcher(None, lowercase_input, name).ratio()
+                if prob_now > highest_prob and prob_now >= 0.5:
+                    highest_prob = prob_now
+                    chart = name
     else:
         chart = None
 
     return chart
 
+def info_chart_not_selected(candidate_visualization):
+
+    print(f"You haven’t selected the chart type for your query result visualization.")
+    print(f"Based on your query result data, we suggest to choose one of the following chart type: {candidate_visualization}\n")
+
+def info_candidate(candidate_visualization):
+    print(f"Based on your query result data, we suggest to choose one of the following chart type: {candidate_visualization}\n")
 
 def set_dataframe(sparql_query, sparql_endpoint):
     """
@@ -170,3 +174,4 @@ def __change_dtypes(dataframe):
             pass
 
     return dataframe
+
