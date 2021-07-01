@@ -12,6 +12,21 @@ class StackedAreaChart(Chart):
         """
         Chart.__init__(self, dataframe, kwargs)
 
+    def promote_to_candidate(self):
+
+        is_promote = self._is_var_exist(self._numerical_column, 2) and self._is_var_exist(self._date_column, 1)
+
+        return is_promote
+
+    def plot(self):
+        """
+        Generate visualization
+        """
+        if self.promote_to_candidate():
+            self.draw()
+        else:
+            pass
+
     def _check_requirements(self):
         """
         Check the requirements for generating StackedAreaChart visualization
@@ -31,7 +46,7 @@ class StackedAreaChart(Chart):
         return date_label, numerical_column          
   
 
-    def plot(self):
+    def draw(self):
         """
         Generate StackedAreaChart visualization
         """

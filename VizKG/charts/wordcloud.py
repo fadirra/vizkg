@@ -12,7 +12,21 @@ class WordCloud(Chart):
             dataframe (pandas.Dataframe): The dataframe
         """
         Chart.__init__(self, dataframe, kwargs)
-        self._words = self._word_result()
+
+    def promote_to_candidate(self):
+
+        is_promote = self._is_var_exist(self._label_column, 1)
+
+        return is_promote
+
+    def plot(self):
+        """
+        Generate visualization
+        """
+        if self.promote_to_candidate():
+            self.draw()
+        else:
+            pass
 
     def _word_result(self):
         """
@@ -33,7 +47,7 @@ class WordCloud(Chart):
 
         return words
 
-    def plot(self):
+    def draw(self):
         """
         Display WordCloud visualizations
 
@@ -57,5 +71,3 @@ class WordCloud(Chart):
             plt.imshow(wordcloud) 
             plt.axis("off") 
             plt.tight_layout(pad = 0)
-        else:
-            print(self._add_candidate_info)  

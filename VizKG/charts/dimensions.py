@@ -11,6 +11,21 @@ class Dimensions(Chart):
         """
         Chart.__init__(self, dataframe, kwargs)
 
+    def promote_to_candidate(self):
+
+        is_promote = self._is_var_exist(self._label_column, 2)
+
+        return is_promote
+
+    def plot(self):
+        """
+        Generate visualization
+        """
+        if self.promote_to_candidate():
+            self.draw()
+        else:
+            pass
+
     def _check_requirements(self):
         """
         Check the requirements for generating dimension visualization
@@ -26,7 +41,7 @@ class Dimensions(Chart):
         
         return dataframe_to_list    
 
-    def plot(self):
+    def draw(self):
         """
         Generate Dimensions visualization
         """

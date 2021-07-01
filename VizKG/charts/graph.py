@@ -14,6 +14,21 @@ class Graph(Chart):
         """
         Chart.__init__(self, dataframe, kwargs)
 
+    def promote_to_candidate(self):
+
+        is_promote = self._is_var_exist(self._uri_column, 2)
+
+        return is_promote
+
+    def plot(self):
+        """
+        Generate visualization
+        """
+        if self.promote_to_candidate():
+            self.draw()
+        else:
+            pass
+
     def _check_requirements(self):
         """
         Check the requirements for generating graph visualization
@@ -54,7 +69,7 @@ class Graph(Chart):
         return filter_column
         
 
-    def plot(self):
+    def draw(self):
         """
         Generate graph visualization
         """
@@ -79,14 +94,14 @@ class Graph(Chart):
                 if len(filter_column) > 2:
                     #check if label exist (not uri)
                     if is_label_column:
-                        graph, positions, edge_labels = self.create_graph_nx(filter_column[0], filter_column[1], filter_column[2])
+                        graph, positions, edge_labels = self.create_graph_nx(filter_column[0], filter_column[2], filter_column[1])
                     else:
                         graph, positions, edge_labels = self.create_graph_nx(filter_column[0], filter_column[2], filter_column[1])
-                    nx.draw_networkx(graph, positions, arrowsize=15)
+                    nx.draw_networkx(graph, positions, arrowsize=15, node_color='#f0f8ff')
                     nx.draw_networkx_edge_labels(graph, pos=positions, edge_labels=edge_labels, font_color='r')
                 else:
                     graph, positions, edge_labels = self.create_graph_nx(filter_column[0], filter_column[1])
-                    nx.draw_networkx(graph, positions, arrowsize=15)
+                    nx.draw_networkx(graph, positions, arrowsize=15, node_color='#f0f8ff')
             finally:
                 plt.show()
 

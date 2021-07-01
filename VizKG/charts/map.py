@@ -11,6 +11,12 @@ class Map(Chart):
             dataframe (pandas.Dataframe): The dataframe
         """
         Chart.__init__(self, dataframe, kwargs)
+
+    def promote_to_candidate(self):
+
+        is_promote = self._is_var_exist(self._coordinate_column, 1)
+
+        return is_promote
     
     def _check_requirements(self):
         """
@@ -20,7 +26,7 @@ class Map(Chart):
             (list) popup_data: list of label name
         """
         popup_data = None
-        if hasattr(self.dataframe, 'coordinate'):
+        if self._is_coordinate_exist(1):
             new_data = self._add_point()
             if len(self._label_column) == 0:
                 popup_data = new_data.coordinate_point
@@ -49,8 +55,9 @@ class Map(Chart):
         popup_data = self._check_requirements()
 
         if popup_data is not None:
-            new_data = self._add_point()
+            data_point = self._add_point()
             #Initiate map folium object
+            new_data = self.truncate_data(data_point)
             maps = folium.Map()
 
             #Marked the map folium object
@@ -71,15 +78,15 @@ class Map(Chart):
         """
         copy_data = self.dataframe.copy()
 
-        data = self.truncate_data(copy_data)    
+        coor_var = self._coordinate_column[0]    
         #Get coordinate data (latitude and longitude)
-        data['coordinate_point'] = data['coordinate']
-        dataframe_new = data.apply(lambda S:S.str.strip('Point()'))
+        copy_data['coordinate_point'] = copy_data[coor_var]
+        dataframe_new = copy_data.apply(lambda S:S.str.strip('Point()OINT'))
         new = dataframe_new[dataframe_new.columns[-1]].str.split(" ", n = 1, expand = True)
         new = new.astype('float64')
-        data['coordinate'] = new.apply(lambda x: list([x[1], x[0]]),axis=1)
+        copy_data['coordinate'] = new.apply(lambda x: list([x[1], x[0]]),axis=1)
 
-        return data
+        return copy_data
 
     def truncate_data(self, data):
 

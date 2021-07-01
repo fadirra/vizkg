@@ -12,6 +12,21 @@ class Timeline(Chart):
         """
         Chart.__init__(self, dataframe, kwargs)
 
+    def promote_to_candidate(self):
+
+        is_promote = self._is_var_exist(self._date_column, 1) and (self._is_var_exist(self._label_column, 1) or self._is_var_exist(self._uri_column, 1))
+
+        return is_promote
+
+    def plot(self):
+        """
+        Generate visualization
+        """
+        if self.promote_to_candidate():
+            self.draw()
+        else:
+            pass
+
     def _check_requirements(self):
         """
         Check the requirements for Timeline visualization
@@ -28,8 +43,6 @@ class Timeline(Chart):
             if len(self._label_column) == 0:
                 if len(self._uri_column) > 0:
                     label_name = self._uri_column[0]
-                elif hasattr(self.dataframe, 'coordinate'):
-                    label_name = [name for name in self.dataframe.columns if name.startswith(tuple(['coordinate']))][0]
                 else:
                     self._is_label_column_exist()
                     label_name = None
@@ -39,7 +52,7 @@ class Timeline(Chart):
         return date_column, label_name
 
 
-    def plot(self):
+    def draw(self):
         """
         Generate Timeline visualization
         """

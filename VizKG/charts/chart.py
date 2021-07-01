@@ -1,9 +1,7 @@
 import re
-import pandas as pd
-import matplotlib.pyplot as plt
 import statistics
 
-class Chart:
+class Chart():
     def __init__(self, dataframe, kwargs):
         """
         Constructs all the necessary attributes for the Chart object
@@ -19,29 +17,85 @@ class Chart:
         self._uri_column = self._set_uri_column()
         self._date_column = self._set_date_column()
         self._numerical_column = self._set_numerical_column()
+        self._coordinate_column = self._set_coordinate_column()
+        self._img_column = self._set_image_column()
         self._label_column = self._set_label_column()
+        self._item_var = self._set_item_var()
+        self._categorical_column = self._set_categorical_column()
         
-        self.candidate_viz = self.candidate_form()
+        # self.candidate_viz = self.candidate_form()
+
+    def promote_to_candidate(self):
+        pass
 
     def _set_label_column(self):
         """
-        Get object or label column name of dataframe based on regex and object data type
+        Get label column name of dataframe based on 'string' dtypes 
+            with excluded uri, image url and coordinate column
+            and sort based on unique value
+
+        :return: (list) label_column: list of label column        
         """
-        #Regex pattern
-        pattern_url = r"^(?:http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$(?<!.[jpg|gif|png|JPG|PNG])" 
-        label_column = []
+        str_column = list(self.dataframe.columns)
+        
+        #exclude uri, image url, coordinate column
+        excluded_column = self._uri_column + self._img_column + self._coordinate_column + self._numerical_column + self._date_column
+        label_column = list(set(str_column) - set(excluded_column))
 
-        for i in range (len(self.dataframe.columns)):
-            column_name = self.dataframe.columns[i]
-            column = self.dataframe[column_name]
-            is_uri_column = self.__check_data_per_column(column, pattern_url)
-            try:
-                if not column_name.startswith(tuple(['coordinate', 'picture'])) and is_uri_column == False and column.dtypes == 'string':
-                    label_column.append(column_name)
-            except TypeError:
+        #sort based on unique value (ASC)
+        unique_dict = {name:len(self.dataframe[name].unique()) for name in (label_column)}
+        sort_dict = {k: v for k, v in sorted(unique_dict.items(), key=lambda item: item[1])}
+
+        sorted_label_column = list(sort_dict.keys())
+        return sorted_label_column
+
+    def _set_item_var(self):
+        """
+        Set item or key of each datapoint
+
+        :return: (str) item_variable: name of variable
+        """
+        item_var = None
+
+        if len(self._label_column) > 0:
+            item_var = self._label_column[-1]
+        else:
+            if len(self._uri_column) > 0:
+                item_var = self._uri_column[0]
+            else:
                 pass
+        
+        return item_var
 
-        return label_column
+    def _set_categorical_column(self):
+        """
+        Set categorical column from label or uri column
+
+        :return: (list) list_of_categorical_variable: list of name
+        """
+        categorical_column = []
+
+        find_label = []
+        if len(self._label_column) > 1:
+            find_label = self._label_column
+        elif len(self._uri_column) > 1 and self._item_var in self._uri_column:
+            find_label = self._uri_column
+        else:
+            pass
+
+        if len(find_label) > 0:
+            unique_dict = {name:len(self.dataframe[name].unique()) for name in (find_label)}
+            fltr_dict = {name:value for name, value in unique_dict.items() if value < (len(self.dataframe))}
+            key_fltr_list = list(fltr_dict.keys())
+            if self._item_var in key_fltr_list:
+                key_fltr_list.remove(self._item_var)
+                categorical_column = key_fltr_list
+            else:
+                categorical_column = key_fltr_list
+        else:
+            pass
+
+        return categorical_column
 
     def _set_date_column(self):
         """
@@ -64,17 +118,82 @@ class Chart:
         Get date column name of dataframe based on date data type
         """
         #Regex pattern
+        """
+        Get uri column name of dataframe based on regex pattern
+
+        :return: (list) uri_column: list of uri variable
+        """
+        #Regex pattern
         pattern_url = r"^(?:http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$(?<!.[jpg|gif|png|JPG|PNG])" 
-        uri_column = []
+        uri_column = self.set_column_based_on_regex(pattern_url)
+
+        return uri_column
+
+    def _set_image_column(self):
+        """
+        Get image column name of dataframe based on regex pattern
+
+        :return: (list) image_column: list of image variable
+        """
+        #Regex pattern
+        pattern_img = r"^http(s)?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jpg|jpeg|gif|png|JPG|JPEG|Jpeg)$"        
+        image_column = self.set_column_based_on_regex(pattern_img)
+
+        return image_column
+
+    def _set_coordinate_column(self):
+        """
+        Get coordinate column name of dataframe based on regex pattern
+
+        :return: (list) coordinate_column: list of coordinate variable
+        """
+        #Regex pattern
+        pattern_coordinate1 = r"^Point"
+        pattern_coordinate2 = r"^POINT"
+        coordinate_column1 = self.set_column_based_on_regex(pattern_coordinate1)
+        coordinate_column2 = self.set_column_based_on_regex(pattern_coordinate2)
+        
+        coordinate_column = coordinate_column1 + coordinate_column2
+        return coordinate_column
+
+    def set_column_based_on_regex(self, pattern):
+        """
+        Set list of column name based on regex matching
+
+        :return: (list) column: list of name
+        """
+        list_column = []
 
         for i in range (len(self.dataframe.columns)):
             column_name = self.dataframe.columns[i]
             column = self.dataframe[self.dataframe.columns[i]]
-            is_uri_column = self.__check_data_per_column(column, pattern_url)
-            if is_uri_column:
-                uri_column.append(column_name)
+            is_matched_column = self.check_data_per_column(column, pattern)
+            if is_matched_column:
+                list_column.append(column_name)
+        
+        return list_column
 
-        return uri_column
+    def check_data_per_column(self, column, pattern):
+        """
+        Check entire data per column of dataframe if matched with regex pattern
+
+        Parameters:
+            (pandas.Dataframe) column: column of dataframe
+            (string) pattern: regex pattern
+
+        Returns:
+            (boolen) boolean_check: The result table             
+        """
+        boolean_check = False
+        for datapoint in range(len(column)):
+            data = column.iloc[datapoint]
+            try:
+                if re.match(pattern, data):
+                    boolean_check = True
+            except TypeError:
+                pass
+                
+        return boolean_check
 
     def candidate_form(self):
         """
@@ -170,7 +289,7 @@ class Chart:
             is_exist = True
         else:
             miss = request - len(self._label_column)
-            print(f"Missing {str(miss)} required label variable, instead use one of this available chart: {self.candidate_viz}")
+            print(f"Missing {str(miss)} required label variable")
 
         return is_exist
 
@@ -189,7 +308,7 @@ class Chart:
             is_exist = True
         else:
             miss = request - len(self._date_column)
-            print(f"Missing {str(miss)} required date variable, instead use one of this available chart: {self.candidate_viz}")
+            print(f"Missing {str(miss)} required date variable")
         
         return is_exist
     
@@ -204,12 +323,11 @@ class Chart:
             (boolena) is_exist: True if list exist
         """
         is_exist = False
-        candidate_form = self.candidate_viz
         if len(self._numerical_column) >= request:
             is_exist = True
         else:
             miss = request - len(self._numerical_column)
-            print(f"Missing {str(miss)} required numerical variable, instead use one of this available chart: {self.candidate_viz}")
+            print(f"Missing {str(miss)} required numerical variable")
         
         return is_exist
 
@@ -224,12 +342,11 @@ class Chart:
             (boolena) is_exist: True if list exist
         """
         is_exist = False
-        candidate_form = self.candidate_viz
         if len(self._uri_column) >= request:
             is_exist = True
         else:
             miss = request - len(self._uri_column)
-            print(f"Missing {str(miss)} required uri variable as identifiers, instead use one of this available chart: {self.candidate_viz}")
+            print(f"Missing {str(miss)} required uri variable as identifiers")
         
         return is_exist
 
@@ -244,12 +361,11 @@ class Chart:
             (boolena) is_exist: True if list exist
         """
         is_exist = False
-        candidate_form = self.candidate_viz
         miss = request
-        if hasattr(self.dataframe, 'picture'):
+        if len(self._img_column) >= request:
             is_exist = True
         else:
-            print(f"Missing {str(miss)} required image variable, instead use one of this available chart: {self.candidate_viz}")
+            print(f"Missing {str(miss)} required image variable")
         
         return is_exist  
 
@@ -264,12 +380,11 @@ class Chart:
             (boolena) is_exist: True if list exist
         """
         is_exist = False
-        candidate_form = self.candidate_viz
         miss = request
-        if hasattr(self.dataframe, 'coordinate'):
+        if len(self._coordinate_column) >= request:
             is_exist = True
         else:
-            print(f"Missing {str(miss)} required coordinate variable, instead use one of this available chart: {self.candidate_viz}")
+            print(f"Missing {str(miss)} required coordinate variable")
         
         return is_exist  
 
@@ -287,14 +402,6 @@ class Chart:
         self.dataframe[column_name] = self.dataframe[uri_column].apply(lambda x: x.split("/")[-1])
 
         return column_name
-
-    def _add_candidate_info(self):
-        """
-        add information of candidate visualization
-        """
-        candidate_text = "Instead use of this available chart" + self.candidate_viz
-
-        return candidate_text
 
     def _check_labels(self):
         """
@@ -374,28 +481,6 @@ class Chart:
             values_label = list(sort_dict.keys())[0]
         
         return values_label,hover_label
-
-    def __check_data_per_column(self,column, pattern):
-        """
-        Check entire data per column of dataframe if matched with regex pattern
-
-        Parameters:
-            (pandas.Dataframe) column: column name of dataframe
-            (string) pattern: regex pattern
-
-        Returns:
-            (boolen) boolean_check: The result table             
-        """
-        boolean_check = False
-        for datapoint in range(len(column)):
-            data = column.iloc[datapoint]
-            try:
-                if re.match(pattern, data):
-                    boolean_check = True
-            except TypeError:
-                pass
-                
-        return boolean_check
 
     @staticmethod
     def __set_mode(mode_input):

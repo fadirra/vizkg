@@ -14,6 +14,12 @@ class ImageGrid(Chart):
         """
         Chart.__init__(self, dataframe, kwargs)
 
+    def promote_to_candidate(self):
+
+        is_promote = self._is_var_exist(self._img_column, 1)
+
+        return is_promote
+
     def _check_requirements(self):
         """
         Check the requirements for Image Grid visualization
@@ -49,7 +55,9 @@ class ImageGrid(Chart):
 
         data_to_pic = self.truncate_data()
 
-        pic = [i for i in data_to_pic.picture]
+        img_var = self._img_column[0]
+
+        pic = [i for i in data_to_pic[img_var]]
         num_pic = len(pic)
         height = max(20, int(num_pic/columns) * 20)
 
@@ -63,6 +71,8 @@ class ImageGrid(Chart):
                     plt.title(item_label[i])
                     plt.imshow(image) #, plt.xticks([]), plt.yticks([])
                     plt.axis('off')
+                except ValueError:
+                    pass
                 except:
                     time.sleep(5)
                     image = imread(url)
@@ -77,6 +87,8 @@ class ImageGrid(Chart):
                     image = imread(url)
                     plt.imshow(image) #, plt.xticks([]), plt.yticks([])
                     plt.axis('off')
+                except ValueError:
+                    pass
                 except:
                     time.sleep(5)
                     image = imread(url)
@@ -85,9 +97,9 @@ class ImageGrid(Chart):
 
     def truncate_data(self):
 
-        data = self.dataframe
+        data = self.dataframe.copy()
         if len(self.dataframe) > 200 :
-            data = data.dataframe[:100]
+            data = self.dataframe.head(200)
             print(f"Time limit exceed. Showing only top of 200 pictures")
         else:
             pass

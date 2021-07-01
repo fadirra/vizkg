@@ -11,6 +11,21 @@ class DensityPlot(Chart):
         """
         Chart.__init__(self, dataframe, kwargs)
 
+    def promote_to_candidate(self):
+
+        is_promote = self._is_var_exist(self._numerical_column, 1) and (len(self.dataframe) > 3) and (len(self._date_column) == 0)
+
+        return is_promote
+
+    def plot(self):
+        """
+        Generate visualization
+        """
+        if self.promote_to_candidate():
+            self.draw()
+        else:
+            pass
+
     def _check_requirements(self):
         """
         Check the requirements for generating DensityPlot visualization
@@ -31,37 +46,30 @@ class DensityPlot(Chart):
                 if min_unique <= 5 and min_unique < len(self.dataframe):
                     label_name=self._label_column[idx_min_unique]
 
-        return numerical_label, label_name   
-
-    def plot(self):
-        """
-        Generate DensityPlot visualization
-        """
-        numerical_label, label_name  = self._check_requirements()
-
-        if numerical_label is not None:
-            if label_name is not None:
-                self.drawplot(numerical_label, label_name)               
+        return numerical_label, label_name      
 
     def filter_data(self):
 
         var_name = list(self.dataframe.columns)
+        data = self.dataframe.copy()
 
-        filter_date_column = list(set(var_name) - set(self._date_column))
-
-        data = self.dataframe[filter_date_column]
+        if len(self._date_column) > 0:
+            filter_date_column = list(set(var_name) - set(self._date_column))
+            data = data.filter(items=filter_date_column)
+        else:
+            pass
 
         return data
 
-    def drawplot(self, numerical_label, label_name):
+    def draw(self):
 
-        filter_data = self.filter_data()
+        numerical_label, label_name  = self._check_requirements()
 
         if label_name is not None:
-            sns.displot(data=filter_data, x=numerical_label, hue=label_name, kind="kde")
+            sns.displot(data=self.dataframe, x=numerical_label, hue=label_name, kind="kde")
             pass
         else:
-            sns.displot(data=filter_data, x=numerical_label, kind="kde")
+            sns.displot(data=self.dataframe, x=numerical_label, kind="kde")
             pass
         
 

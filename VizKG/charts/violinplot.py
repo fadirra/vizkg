@@ -11,6 +11,21 @@ class ViolinPlot(Chart):
         """
         Chart.__init__(self, dataframe, kwargs)
 
+    def promote_to_candidate(self):
+
+        is_promote = self._is_var_exist(self._label_column, 1) and self._is_var_exist(self._numerical_column, 1)
+
+        return is_promote
+
+    def plot(self):
+        """
+        Generate visualization
+        """
+        if self.promote_to_candidate():
+            self.draw()
+        else:
+            pass
+
     def _check_requirements(self):
         """
         Check the requirements for generating violinPlot visualization
@@ -29,7 +44,7 @@ class ViolinPlot(Chart):
                 
         return numerical_label, label_column      
 
-    def plot(self):
+    def draw(self):
         """
         Generate violinPlot visualization
         """

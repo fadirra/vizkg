@@ -13,7 +13,22 @@ class Table(Chart):
         """
         Chart.__init__(self, dataframe, kwargs)
 
+    def promote_to_candidate(self):
+
+        is_promote = len(self.dataframe) > 0
+
+        return is_promote
+
     def plot(self):
+        """
+        Generate visualization
+        """
+        if self.promote_to_candidate():
+            self.draw()
+        else:
+            pass
+
+    def draw(self):
         """
         Generate table visualization
         """

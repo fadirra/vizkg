@@ -30,16 +30,17 @@ class VizKGTestCase(unittest.TestCase):
         """
         service_url = "https://query.wikidata.org/sparql"
         self.obj = vkg(sparql_query=query, sparql_service_url=service_url)
+        # self.chart = DataIdentification(self.obj.dataframe)
         self.chart = Chart(self.obj.dataframe, self.obj.kwargs)
         
 
     def test_column_dataframe(self):
         obj_column_names = list(self.obj.dataframe.columns)
-        column_names = ["item", "linkTo", "prop", "itemLabel", "propLabel", "linkToLabel", "picture", "dob", "height", "coordinate"]
+        column_names = ["item", "linkTo", "prop", "itemLabel", "propLabel", "linkToLabel", "img", "dob", "height", "point"]
         self.assertListEqual(obj_column_names, obj_column_names)
 
     def test_string_column_data_type(self):
-        str_column_names = ["item", "linkTo", "prop", "itemLabel", "propLabel", "linkToLabel", "picture", "coordinate"]
+        str_column_names = ["item", "linkTo", "prop", "itemLabel", "propLabel", "linkToLabel", "img", "point"]
         for name in str_column_names:
             self.assertEqual(True, (self.obj.dataframe[name].dtypes == 'string'))
 
@@ -60,8 +61,30 @@ class VizKGTestCase(unittest.TestCase):
 
     def test_label_column(self):
         label_column = self.chart._label_column
-        exp_label_column = ["itemLabel",  "linkToLabel", "propLabel"]
+        exp_label_column = ["itemLabel", "propLabel", "linkToLabel"]
         self.assertListEqual(label_column, exp_label_column)
+
+    def test_img_column(self):
+        img_column = self.chart._img_column
+        exp_img_column = ["img"]
+        self.assertListEqual(img_column, exp_img_column)
+
+    def test_coord_column(self):
+        coord_column = self.chart._coordinate_column
+        exp_coord_column = ["point"]
+        self.assertListEqual(coord_column, exp_coord_column)
+
+    def test_item_var(self):
+        item_var = self.chart._item_var
+        pass
+
+    def test_categorical_col(self):
+        categorical_col = self.chart._categorical_column
+        pass
+
+    def test_label_col(self):
+        label_colum = self.chart._label_column
+        pass
 
 if __name__ == '__main__':
 

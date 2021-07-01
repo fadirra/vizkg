@@ -6,26 +6,6 @@ from SPARQLWrapper import SPARQLWrapper
 from difflib import SequenceMatcher
 from .chartdict import chartdict
 
-def generate_charts_dictionary():
-    """
-        Get dictionary of chart type
-
-        Returns:
-            (dict) chartdict: dictionary of visualization chart type
-    """
-    keys = []
-    values = []
-    for name, mod in inspect.getmembers(importlib.import_module("VizKG.charts"), inspect.ismodule):
-            keys.append(name)
-
-    for name, cls in inspect.getmembers(importlib.import_module("VizKG.charts"), inspect.isclass):
-            values.append(cls)
-
-    chartdict = {keys[i]: values[i] for i in range(len(values))}
-    chartdict.pop("chart")
-
-    return chartdict    
-
 def set_chart(chart_input):
     """
     Setter of chart based on chart input
@@ -86,63 +66,9 @@ def set_dataframe(sparql_query, sparql_endpoint):
 
     data_table = table[[column_name for column_name in table.columns if column_name.endswith('.value')]]
     data_table.columns = data_table.columns.str.replace('.value$', '', regex=True)
-    rename_column_table = __rename_column_table(data_table)
-    change_dtype_table = __change_dtypes(rename_column_table)
-    result_table = change_dtype_table
+    result_table = __change_dtypes(data_table)
     
     return result_table
-
-
-def __rename_column_table(dataframe):
-    """
-    Rename column of dataframe based on regex validity check
-
-    Parameters:
-        (pandas.Dataframe) dataframe: The table
-
-    Returns:
-        (pandas.Dataframe) dataframe: The result table             
-    """
-
-    #Regex pattern
-    pattern_url = r"^(?:http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$(?<!.[jpg|gif|png|JPG|PNG])" 
-    pattern_img = r"^http(s)?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jpg|jpeg|gif|png|JPG|JPEG|Jpeg)$"        
-    pattern_coordinate = r"^Point"
-
-    for i in range (len(dataframe.columns)):
-        column = dataframe[dataframe.columns[i]]
-        is_picture_column = __check_data_per_column(column, pattern_img)
-        is_coordinate_column = __check_data_per_column(column, pattern_coordinate)
-        if is_picture_column:
-            dataframe =  dataframe.rename(columns={dataframe.columns[i]: "picture"}, errors="raise")
-        elif is_coordinate_column:
-            dataframe =  dataframe.rename(columns={dataframe.columns[i]: "coordinate"}, errors="raise")
-        else:
-            pass
-
-    return dataframe
-
-def __check_data_per_column(column, pattern):
-    """
-    Check entire data per column of dataframe if matched with regex pattern
-
-    Parameters:
-        (pandas.Dataframe) column: column name of dataframe
-        (string) pattern: regex pattern
-
-    Returns:
-        (boolen) boolean_check: The result table             
-    """
-    boolean_check = False
-    for datapoint in range(len(column)):
-        data = column.iloc[datapoint]
-        try:
-            if re.match(pattern, data):
-                boolean_check = True
-        except TypeError:
-            pass
-            
-    return boolean_check
 
 def __change_dtypes(dataframe):
     """
@@ -175,3 +101,22 @@ def __change_dtypes(dataframe):
 
     return dataframe
 
+def generate_charts_dictionary():
+    """
+        Get dictionary of chart type
+
+        Returns:
+            (dict) chartdict: dictionary of visualization chart type
+    """
+    keys = []
+    values = []
+    for name, mod in inspect.getmembers(importlib.import_module("VizKG.charts"), inspect.ismodule):
+            keys.append(name)
+
+    for name, cls in inspect.getmembers(importlib.import_module("VizKG.charts"), inspect.isclass):
+            values.append(cls)
+
+    chartdict = {keys[i]: values[i] for i in range(len(values))}
+    chartdict.pop("chart")
+
+    return chartdict    
