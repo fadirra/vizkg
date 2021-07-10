@@ -60,4 +60,5 @@ class AreaChart(Chart):
             fig.show()
         else:
             fig = px.area(self.dataframe, x=date_label, y=numerical_label)
+            fig.show()
 
