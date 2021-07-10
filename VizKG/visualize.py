@@ -69,19 +69,11 @@ class VizKG:
       chart_list = list(chartdict.keys())
       candidate = []
       for idx,name in enumerate(chart_list):
-        check = chartdict[name.lower()](self.__data, self.kwargs)
-        is_promoted = check.promote_to_candidate()
-        if is_promoted:
-          candidate.append(name)
+          check = chartdict[name.lower()](self.__data, self.kwargs)
+          is_promoted = check.promote_to_candidate()
+          if is_promoted:
+            candidate.append(name)
       return candidate
-
-  def __find_candidate_form(self):
-
-      chart_list = chartdict.keys()
-      chart = Chart(self.__data, self.kwargs)
-      candidate_visualization = list(chart.candidate_form())
-
-      return candidate_visualization
 
   def __plot_randomize(self, candidate_visualization):
 
