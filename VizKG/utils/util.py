@@ -4,19 +4,17 @@ import importlib, inspect
 from pandas import json_normalize
 from SPARQLWrapper import SPARQLWrapper
 from difflib import SequenceMatcher
-from .chartdict import chartdict
+from .chartdict import chartdict as chart_dictionary
 
 def set_chart(chart_input):
     """
     Setter of chart based on chart input
 
-    Parameters:
-        (string) chart_input: The chart input
+    :param (str) chart_input: The chart input
 
-    Returns:
-        (list) chart: The available chart   
+    :return: (str) chart: The available chart   
     """
-    chart = chartdict #generate_charts_dictionary()
+    chart = chart_dictionary 
     charts = chart.keys()
 
     if chart_input is not None:
