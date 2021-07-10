@@ -45,7 +45,7 @@ class RadarChart(Chart):
         
         return label_name, numerical_column    
 
-    def plot(self):
+    def draw(self):
         """
         Generate Radar Chart visualization
         """
