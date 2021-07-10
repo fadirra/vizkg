@@ -34,10 +34,13 @@ class Tree(Chart):
             (list) filter_column: list of filter label name
         """
         filter_column = None
-        if self._is_uri_column_exist(2):
-            filter_column = self._label_column
-            if len(self._label_column) < 2:
+        if self._is_var_exist(self._uri_column, 2):
+            if (len(self._label_column)) == (len(self._uri_column)):
+                filter_column = self._label_column
+            else:
                 filter_column = self._uri_column
+        else:
+            pass            
         
         return filter_column
     
@@ -52,14 +55,17 @@ class Tree(Chart):
             #Extract selected column as new dataframe
             data = self.dataframe[filter_column].copy()
 
-            nodes = {}
-            for parent, child in zip(data.iloc[:, 0],data.iloc[:, 1]):
-                self.add_nodes(nodes, parent, child)
-
-            roots = list(data[~data.iloc[:, 0].isin(data.iloc[:, 1])][data.columns[0]].unique())
-            for root in roots:         # you can skip this for roots[0], if there is no forest and just 1 tree
-                for pre, _, node in RenderTree(nodes[root]):
-                    print("%s%s" % (pre, node.name))
+            for i in range (len(filter_column)):
+                nodes = {}
+                if i == len(filter_column) - 1:
+                    break
+                for parent, child in zip(data.iloc[:, i],data.iloc[:, i+1]):
+                    self.add_nodes(nodes, parent, child)                
+            
+                roots = list(data[~data.iloc[:, i].isin(data.iloc[:, i+1])][data.columns[i]].unique())
+                for root in roots:         # you can skip this for roots[0], if there is no forest and just 1 tree
+                    for pre, _, node in RenderTree(nodes[root]):
+                        print("%s%s" % (pre, node.name))
 
     @staticmethod    
     def add_nodes(nodes, parent, child):
