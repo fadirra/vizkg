@@ -20,11 +20,7 @@ class Chart():
         self._coordinate_column = self._set_coordinate_column()
         self._img_column = self._set_image_column()
         self._label_column = self._set_label_column()
-        self._item_var = self._set_item_var()
-        self._categorical_column = self._set_categorical_column()
         
-        # self.candidate_viz = self.candidate_form()
-
     def promote_to_candidate(self):
         pass
 
@@ -49,53 +45,31 @@ class Chart():
         sorted_label_column = list(sort_dict.keys())
         return sorted_label_column
 
-    def _set_item_var(self):
+    def _set_item_and_categorical(self):
         """
-        Set item or key of each datapoint
+        Set item and categorical var from label or uri column
 
-        :return: (str) item_variable: name of variable
+        :return: (list,list) list_item_col, list_of_categorical_variable: list of name        
         """
-        item_var = None
+        item_col = []
+        categorical_col = []
 
+        filter_col = []
         if len(self._label_column) > 0:
-            item_var = self._label_column[-1]
-        else:
-            if len(self._uri_column) > 0:
-                item_var = self._uri_column[0]
-            else:
-                pass
-        
-        return item_var
-
-    def _set_categorical_column(self):
-        """
-        Set categorical column from label or uri column
-
-        :return: (list) list_of_categorical_variable: list of name
-        """
-        categorical_column = []
-
-        find_label = []
-        if len(self._label_column) > 1:
-            find_label = self._label_column
-        elif len(self._uri_column) > 1 and self._item_var in self._uri_column:
-            find_label = self._uri_column
+            filter_col = self._label_column
+        elif len(self._uri_column) > 0:
+            filter_col = self._uri_column
         else:
             pass
 
-        if len(find_label) > 0:
-            unique_dict = {name:len(self.dataframe[name].unique()) for name in (find_label)}
-            fltr_dict = {name:value for name, value in unique_dict.items() if value < (len(self.dataframe))}
-            key_fltr_list = list(fltr_dict.keys())
-            if self._item_var in key_fltr_list:
-                key_fltr_list.remove(self._item_var)
-                categorical_column = key_fltr_list
+        unique_dict = {name:len(self.dataframe[name].unique()) for name in (filter_col)}
+        sort_dict = {k: v for k, v in sorted(unique_dict.items(), key=lambda item: item[1])}
+        for name, value in sort_dict.items():
+            if value <= (len(self.dataframe) / 2):
+                categorical_col.append(name)
             else:
-                categorical_column = key_fltr_list
-        else:
-            pass
-
-        return categorical_column
+                item_col.append(name)
+        return item_col, categorical_col
 
     def _set_date_column(self):
         """
@@ -194,67 +168,6 @@ class Chart():
                 pass
                 
         return boolean_check
-
-    def candidate_form(self):
-        """
-        Find candidate form for visualization
-
-        Parameter:
-            dataframe (pandas.Dataframe): The data table
-
-        Returns:
-            candidate_visualization (list): List of candidate visualization
-        """
-
-        candidate_visualization = []
-
-        #Add to candidate visualization
-        if 'picture' in self.dataframe.columns:
-            candidate_visualization.append('ImageGrid')
-        if 'coordinate' in self.dataframe.columns:
-            candidate_visualization.append('Map')
-        if len(self._label_column) >= 2 :
-            candidate_visualization.append('Dimensions')   
-        if len(self._numerical_column) == 2:
-            candidate_visualization.append('ScatterChart')         
-        if len(self._date_column) >= 1 and len(self._label_column) >= 1:
-            candidate_visualization.append('Timeline')
-        if len(self._label_column) >= 2 and len(self._uri_column) >= 2:
-            candidate_visualization.append('Graph')
-            candidate_visualization.append('Tree')
-        if 3 <= len(self._numerical_column) < len(self.dataframe):
-            candidate_visualization.append('HeatMap')
-        if len(self._numerical_column) >= 3 and len(self._label_column) == 1 and len(self.dataframe) <= 3:
-            candidate_visualization.append('RadarChart')
-        if len(self._numerical_column) < len(self._label_column) >= 1:
-            candidate_visualization.append('WordCloud')
-        if len(self._label_column) >= 1 and len(self._date_column) >= 1 and len(self._numerical_column) >= 1:
-            candidate_visualization.append('AreaChart')
-        if len(self._date_column) >= 1 and len(self._numerical_column) >= 2:
-            candidate_visualization.append('StackedAreaChart')
-        if len(self._date_column) >= 1 and len(self._numerical_column) >= 1:
-            candidate_visualization.append('LineChart')
-        if 1 <= len(self._label_column) <= 2 and len(self._numerical_column) == 1 < len(self.dataframe):
-            candidate_visualization.append('BarChart')
-        if 1 <= len(self._numerical_column) < len(self._label_column) >= 2 :
-            candidate_visualization.append('TreeMap')
-            candidate_visualization.append('SunBurstChart')
-        if len(self._numerical_column) >= 1 < len(self.dataframe) and len(self._date_column) == 0:
-            candidate_visualization.append('Histogram')
-            candidate_visualization.append('DensityPlot')
-        if len(self._numerical_column) == 1 and (len(self._label_column) == 1 or len(self._uri_column) == 1):
-            candidate_visualization.append('BubbleChart')
-        if len(self._label_column) >= 1 and len(self._numerical_column) >= 1 < len(self.dataframe):
-            candidate_visualization.append('PieChart')
-            candidate_visualization.append('DonutChart')
-            if min(list(self.dataframe[self._label_column[0]].value_counts())) >= 2:
-                candidate_visualization.append('BoxPlot')
-                candidate_visualization.append('ViolinPlot')
-        candidate_visualization.append('Table')
-
-        candidate_visualization = list(set(candidate_visualization))
-
-        return candidate_visualization
 
     def _is_var_exist(self, column, request=1):
         """

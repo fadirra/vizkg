@@ -1,5 +1,5 @@
 # VizKG
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fadirra/vizkg/blob/development/example/VizKG.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17caTzWK1-rPU44mYfn5v4YaEc7Y7eAZa?pli=1#scrollTo=gOM-o9o6twi4)
 
 Visualization wrapper for SPARQL query results
 

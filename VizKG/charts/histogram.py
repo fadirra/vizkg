@@ -39,12 +39,9 @@ class Histogram(Chart):
 
         if self._is_numerical_column_exist(1):
             numerical_label = self._numerical_column[0]
-            if len(self._label_column) > 0:
-                unique_list = [len(self.dataframe[name].unique()) for name in self._label_column]
-                min_unique = min(unique_list)
-                idx_min_unique = unique_list.index(min(unique_list))
-                if min_unique <= 5 and min_unique < len(self.dataframe):
-                    label_name=self._label_column[idx_min_unique]
+            self._item_var, self._categorical_column  = self._set_item_and_categorical()
+            if len(self._categorical_column) > 0:
+                label_name = self._categorical_column[0]
 
         return numerical_label, label_name      
 

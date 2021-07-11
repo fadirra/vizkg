@@ -1,6 +1,5 @@
 from .chart import Chart
 import matplotlib.pyplot as plt
-import plotly.express as px
 
 class StackedAreaChart(Chart):
     def __init__(self, dataframe, kwargs):
@@ -14,7 +13,16 @@ class StackedAreaChart(Chart):
 
     def promote_to_candidate(self):
 
-        is_promote = self._is_var_exist(self._numerical_column, 2) and self._is_var_exist(self._date_column, 1)
+        is_promote = False
+        check_var = self._is_var_exist(self._numerical_column, 1) and self._is_var_exist(self._date_column, 1)
+        if check_var:
+            if (len(self._numerical_column) == 1):
+                if len(self.dataframe[self._date_column[0]].unique()) == len(self.dataframe):
+                    is_promote = True
+                else:
+                    is_promote = False
+            else:
+                is_promote = True
 
         return is_promote
 

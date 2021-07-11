@@ -1,7 +1,5 @@
 from .chart import Chart
-import matplotlib.pyplot as plt
 import plotly.express as px
-import seaborn as sns
 
 class LineChart(Chart):
     def __init__(self, dataframe, kwargs):
@@ -58,10 +56,11 @@ class LineChart(Chart):
 
         if date_label is not None and numerical_label is not None:
             if label_name is not None:
-                plt.figure(figsize=(15,8))
-                sns.lineplot(data=self.dataframe, x=date_label, y=numerical_label, hue=label_name)
-                plt.show(block=True)
+                data = self.dataframe.sort_values(by=[date_label])
+                fig = px.line(data_frame=data, x=date_label, y=numerical_label, color=label_name)
+                fig.show()
             else:
-                fig = px.line(data_frame=self.dataframe, x=date_label, y=numerical_label)
+                data = self.dataframe.sort_values(by=[date_label])
+                fig = px.line(data_frame=data, x=date_label, y=numerical_label)
                 fig.show()
 

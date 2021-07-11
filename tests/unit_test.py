@@ -74,18 +74,6 @@ class VizKGTestCase(unittest.TestCase):
         exp_coord_column = ["point"]
         self.assertListEqual(coord_column, exp_coord_column)
 
-    def test_item_var(self):
-        item_var = self.chart._item_var
-        pass
-
-    def test_categorical_col(self):
-        categorical_col = self.chart._categorical_column
-        pass
-
-    def test_label_col(self):
-        label_colum = self.chart._label_column
-        pass
-
 if __name__ == '__main__':
 
     unittest.main()

@@ -80,8 +80,10 @@ class Map(Chart):
 
         coor_var = self._coordinate_column[0]    
         #Get coordinate data (latitude and longitude)
+        char_delete = 'Point()OINT'
         copy_data['coordinate_point'] = copy_data[coor_var]
-        dataframe_new = copy_data.apply(lambda S:S.str.strip('Point()OINT'))
+        dataframe_new = copy_data.coordinate_point.astype(str).apply(lambda S:S.strip(char_delete))
+        dataframe_new = dataframe_new.to_frame()
         new = dataframe_new[dataframe_new.columns[-1]].str.split(" ", n = 1, expand = True)
         new = new.astype('float64')
         copy_data['coordinate'] = new.apply(lambda x: list([x[1], x[0]]),axis=1)
