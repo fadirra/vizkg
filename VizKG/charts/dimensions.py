@@ -34,7 +34,7 @@ class Dimensions(Chart):
             (list) dataframe_to_list: list of dataframe
         """
         dataframe_to_list = None
-        if self._is_label_column_exist(2):
+        if self._is_var_exist(self._label_column, 2):
             dataframe_to_list = []
             for column in self._label_column:
                 dataframe_to_list += self.dataframe[column].tolist()

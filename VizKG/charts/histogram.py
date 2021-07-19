@@ -37,7 +37,7 @@ class Histogram(Chart):
         numerical_label = None
         label_name = None
 
-        if self._is_numerical_column_exist(1):
+        if self._is_var_exist(self._numerical_column, 1):
             numerical_label = self._numerical_column[0]
             self._item_var, self._categorical_column  = self._set_item_and_categorical()
             if len(self._categorical_column) > 0:

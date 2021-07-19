@@ -1,7 +1,5 @@
 from .chart import Chart
 import plotly.express as px
-import statistics
-
 
 class PieChart(Chart):
     def __init__(self, dataframe, kwargs):
@@ -34,42 +32,26 @@ class PieChart(Chart):
 
         Returns:
             (string) label_name: label name
-            (list) numerical_column: list of numerical column
+            (list) numerical_var: numerical var
         """
         label_name = None
-        numerical_column = None
+        numerical_var = None
         
-        if self._is_numerical_column_exist(1):
-            numerical_column = self._numerical_column
-            if self._is_label_column_exist(1):
-                if len(self._label_column) > 1:
-                    axis_label, group_label = self._check_labels()
-                    if group_label is not None:
-                        label_name = group_label
-                    else:
-                        label_name = axis_label
-                else:    
-                    label_name = self._label_column[0]
+        if self._is_var_exist(self._numerical_column, 1):
+            numerical_var = self._numerical_column[0]
+            if self._is_var_exist(self._label_column, 1):
+                label_name = self._label_column[0]
 
         
-        return label_name, numerical_column    
+        return label_name, numerical_var    
 
     def draw(self):
         """
         Generate PieChart visualization
         """
-        label_name, numerical_column  = self._check_requirements()
+        label_name, numerical_var  = self._check_requirements()
 
-        if label_name is not None and numerical_column is not None:
-            values_label,hover_label = self._check_numerical_columns()
-            if hover_label is not None:
-                #plot
-                fig = px.pie(self.dataframe, values=values_label, names=label_name,
-                                hover_data=[hover_label])
-                fig.show()
-            else:
-                fig = px.pie(self.dataframe, values=values_label, names=label_name)
-                fig.show()                
-
-
+        if label_name is not None and numerical_var is not None:
+            fig = px.pie(self.dataframe, values=numerical_var, names=label_name)
+            fig.show()                
 

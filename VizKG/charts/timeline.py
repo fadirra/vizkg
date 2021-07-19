@@ -38,13 +38,12 @@ class Timeline(Chart):
         date_column = None
         label_name = None
 
-        if self._is_date_column_exist(1):
+        if self._is_var_exist(self._date_column, 1):
             date_column = self._date_column
             if len(self._label_column) == 0:
                 if len(self._uri_column) > 0:
                     label_name = self._uri_column[0]
                 else:
-                    self._is_label_column_exist()
                     label_name = None
             else:
                 label_name = self._label_column[0]
@@ -67,9 +66,18 @@ class Timeline(Chart):
                 fig.update_yaxes(autorange="reversed")
                 fig.show()
             else:
+                data = self.dataframe.sort_values(by=[date_column[0]])
+                range_time = data[date_column[0]][0] - data[date_column[0]][len(self.dataframe)-1]
                 add_column = self.dataframe.copy()
-                add_column['Y+1'] = [add_column[date_column[0]][i] + datetime.timedelta(days=365) for i in range (len(add_column))]
-                fig = px.timeline(add_column, x_start=date_column[0], x_end='Y+1', 
-                                    y=label_name, color=label_name, hover_data={'Y+1':False})
+
+                if range_time <= datetime.timedelta(days=30):
+                    add_column['T+1'] = [add_column[date_column[0]][i] + datetime.timedelta(days=1) for i in range (len(add_column))]
+                elif range_time > datetime.timedelta(days=30) and range_time <= datetime.timedelta(days=365):
+                    add_column['T+1'] = [add_column[date_column[0]][i] + datetime.timedelta(days=15) for i in range (len(add_column))]
+                else:
+                    add_column['T+1'] = [add_column[date_column[0]][i] + datetime.timedelta(days=365) for i in range (len(add_column))]
+
+                fig = px.timeline(add_column, x_start=date_column[0], x_end='T+1', 
+                                    y=label_name, color=label_name, hover_data={'T+1':False})
                 fig.update_yaxes(autorange="reversed")
                 fig.show()

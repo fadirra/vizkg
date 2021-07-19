@@ -15,7 +15,8 @@ class BubbleChart(Chart):
 
     def promote_to_candidate(self):
 
-        is_promote = (self._is_var_exist(self._label_column, 1) or self._is_var_exist(self._uri_column, 1)) and self._is_var_exist(self._numerical_column, 1)
+        item_col, categorical_col = self._set_item_and_categorical()
+        is_promote = self._is_var_exist(item_col, 1) and self._is_var_exist(self._numerical_column, 1)
 
         return is_promote
 
@@ -38,14 +39,10 @@ class BubbleChart(Chart):
         """
         numerical_label = None
         label_name = None
-        if self._is_numerical_column_exist(1):
+        if self._is_var_exist(self._numerical_column, 1):
             numerical_label = self._numerical_column[0]
             if len(self._label_column) > 0:
-                label_name = self._label_column[0]
-            elif len(self._uri_column) > 0:
-                label_name = self._get_label_from_uri(self._uri_column[0])
-            else:
-                self._is_label_column_exist(1)
+                label_name = self._label_column[-1]
         
         return numerical_label, label_name
 
@@ -56,8 +53,9 @@ class BubbleChart(Chart):
         numerical_label, label_name = self._check_requirements()
 
         if numerical_label is not None and label_name is not None:
+            self.figsize = set_figsize(self.kwargs.get('figsize'))
             bubble_chart = DrawBubbleChart(area=self.dataframe[numerical_label], bubble_spacing=2)
-            bubble_chart.draw(self.dataframe[label_name])
+            bubble_chart.draw(self.dataframe[label_name], self.figsize)
 
 
 class DrawBubbleChart:
@@ -184,7 +182,7 @@ class DrawBubbleChart:
             if moves / len(self.bubbles) < 0.1:
                 self.step_dist = self.step_dist / 2
 
-    def draw(self, labels):
+    def draw(self, labels, figsize_input=None):
         """
         Draw the bubble plot.
 
@@ -198,19 +196,63 @@ class DrawBubbleChart:
         """
         self.collapse()
 
-        fig, ax = plt.subplots(figsize=(10,8), subplot_kw=dict(aspect="equal"))
-        for i in range(len(self.bubbles)):
-            circ = plt.Circle(
-                self.bubbles[i, :2], self.bubbles[i, 2], 
-                color=self.colors[i],
-                )
-            ax.add_patch(circ)
-            ax.text(*self.bubbles[i, :2], labels[i],
-                    horizontalalignment='center', verticalalignment='center')
+        #check if param figsize exist
+        if figsize_input is not None:
+            fig, ax = plt.subplots(figsize=figsize_input, subplot_kw=dict(aspect="equal"))
+            for i in range(len(self.bubbles)):
+                circ = plt.Circle(
+                    self.bubbles[i, :2], self.bubbles[i, 2], 
+                    color=self.colors[i],
+                    )
+                ax.add_patch(circ)
+                ax.text(*self.bubbles[i, :2], labels[i],
+                        horizontalalignment='center', verticalalignment='center')
 
-        ax.axis("off")
-        ax.relim()
-        ax.autoscale_view()
-        # ax.set_title('Plot')
+            ax.axis("off")
+            ax.relim()
+            ax.autoscale_view()
+            plt.show()
+        else:
+            fig, ax = plt.subplots(figsize=(10,8), subplot_kw=dict(aspect="equal"))
+            for i in range(len(self.bubbles)):
+                circ = plt.Circle(
+                    self.bubbles[i, :2], self.bubbles[i, 2], 
+                    color=self.colors[i],
+                    )
+                ax.add_patch(circ)
+                ax.text(*self.bubbles[i, :2], labels[i],
+                        horizontalalignment='center', verticalalignment='center')
 
-        plt.show()
+            ax.axis("off")
+            ax.relim()
+            ax.autoscale_view()
+            plt.show()
+
+
+def set_figsize(figsize_input):
+    """
+    Setter of figsize based on figsize input for matplotlib chart
+
+    Parameters:
+        (tuple) figsize_input: The figsize input
+
+    Returns:
+        (tuple) figsize: The result figsize  
+    """
+    figsize = None
+    is_numeric_value = None
+
+    try:
+        if figsize_input is not None and len(figsize_input) == 2:
+            is_numeric_value = all(isinstance(v, int) or isinstance(v, float) for v in figsize_input)
+        else:
+            is_numeric_value = False
+    except:
+        is_numeric_value = False
+        
+    if is_numeric_value:
+        figsize = figsize_input
+    else:
+        figsize = None
+
+    return figsize

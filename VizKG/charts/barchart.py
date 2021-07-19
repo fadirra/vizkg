@@ -14,7 +14,8 @@ class BarChart(Chart):
 
     def promote_to_candidate(self):
 
-        is_promote = self._is_var_exist(self._numerical_column, 1) and self._is_var_exist(self._label_column, 1)
+        item_column, categorical_column = self._set_item_and_categorical()
+        is_promote = self._is_var_exist(self._numerical_column, 1) and self._is_var_exist(item_column, 1)
 
         return is_promote
 
@@ -33,49 +34,70 @@ class BarChart(Chart):
 
         Returns:
             (string) int_label: numerical label 
-            (list) label_column: label column
+            (list) item_column: item_column
+            (list) categorical_column: categorical_column
         """
         int_label = None
-        label_column = None
+        item_column = None
+        categorical_column = None
 
-        if self._is_numerical_column_exist(1):
+        if self._is_var_exist(self._numerical_column, 1):
             int_label = self._numerical_column[0]
-            if self._is_label_column_exist(1):
-                label_column = self._label_column
+            if self._is_var_exist(self._label_column, 1):
+                item_column, categorical_column = self._set_item_and_categorical()
         
-        return int_label, label_column    
+        return int_label, item_column, categorical_column    
 
-    def plot(self):
+    def draw(self):
         """
         Generate BarChart visualization
         """
-        numerical_label, label_column  = self._check_requirements()
+        numerical_label, item_column, categorical_column  = self._check_requirements()
+        
+        #check orientation
+        orientation = None
+        if len(categorical_column) > 0:
+            orientation = self._check_orientation(item_column[0],categorical_column[0])
+        else:
+            orientation = self._check_orientation(item_column[0])
 
-        if label_column is not None and numerical_label is not None:
-            axis_label,group_label,make_axis_label = None,None, None
-            if len(label_column) >= 3:
-                axis_label,group_label,make_axis_label = self._check_labels()
+        if len(categorical_column) > 0:
+            if orientation is not None:
+                fig = px.bar(self.dataframe, x=numerical_label, y=item_column[0], color=categorical_column[0])
+                fig.show()
             else:
-                axis_label,group_label = self._check_labels()
-                
-            orientation = self._check_orientation(axis_label,group_label)
+                fig = px.bar(self.dataframe, x=item_column[0], y=numerical_label, color=categorical_column[0])
+                fig.show()
+        else:
+            if orientation is not None:
+                data = self.dataframe.sort_values(by=[numerical_label])
+                fig = px.bar(data, x=numerical_label, y=item_column[0])
+                fig.show()
+            else:
+                data = self.dataframe.sort_values(by=[numerical_label], ascending=False)
+                fig = px.bar(data, x=item_column[0], y=numerical_label)
+                fig.show()             
 
-            if make_axis_label is not None:
-                axis_label = make_axis_label
-            else:
-                pass
 
-            if group_label is not None:
-                if orientation is not None:
-                    fig = px.bar(self.dataframe, x=numerical_label, y=axis_label, color=group_label)
-                    fig.show()
-                else:
-                    fig = px.bar(self.dataframe, x=axis_label, y=numerical_label, color=group_label)
-                    fig.show()
-            else:
-                if orientation is not None:
-                    fig = px.bar(self.dataframe, x=numerical_label, y=axis_label)
-                    fig.show()
-                else:
-                    fig = px.bar(self.dataframe, x=axis_label, y=numerical_label)
-                    fig.show() 
+    def _check_orientation(self, axis_label, group_label=None, max_number=6):
+        """
+        Check the requirements for changing orientation, returns None if horizontal
+
+        Returns:
+            (string) orientation: label for axis
+        """
+        orientation = None
+        num_box = 0
+        num_axis = len(self.dataframe[axis_label].unique())
+        num_box = 0
+
+        if group_label is not None:
+            num_group = len(self.dataframe[group_label].unique())
+            num_box = num_axis + num_group
+        else:
+            num_box = num_axis
+
+        if num_box > max_number:
+            orientation = 'Horizontal'
+
+        return orientation

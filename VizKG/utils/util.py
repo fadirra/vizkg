@@ -34,14 +34,6 @@ def set_chart(chart_input):
 
     return chart
 
-def info_chart_not_selected(candidate_visualization):
-
-    print(f"You haven’t selected the chart type for your query result visualization.")
-    print(f"Based on your query result data, we suggest to choose one of the following chart type: {candidate_visualization}\n")
-
-def info_candidate(candidate_visualization):
-    print(f"Based on your query result data, we suggest to choose one of the following chart type: {candidate_visualization}\n")
-
 def set_dataframe(sparql_query, sparql_endpoint):
     """
     Query the endpoint with the given query string and format the result table
@@ -64,13 +56,13 @@ def set_dataframe(sparql_query, sparql_endpoint):
 
     data_table = table[[column_name for column_name in table.columns if column_name.endswith('.value')]]
     data_table.columns = data_table.columns.str.replace('.value$', '', regex=True)
-    result_table = __change_dtypes(data_table)
+    result_table = __convert_dtypes(data_table)
     
     return result_table
 
-def __change_dtypes(dataframe):
+def __convert_dtypes(dataframe):
     """
-    Change data type column of dataframe
+    Convert data type each column of dataframe
 
     Parameters:
         (pandas.Dataframe) dataframe: The table

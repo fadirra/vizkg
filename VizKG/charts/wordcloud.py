@@ -54,7 +54,7 @@ class WordCloud(Chart):
         Parameters:
             (string) words: the visualized words
         """
-        if self._is_label_column_exist(1):
+        if self._is_var_exist(self._label_column, 1):
             #initiate words
             words = self._word_result()
             #initiate wordcloud object
@@ -66,8 +66,45 @@ class WordCloud(Chart):
                             min_font_size = 10
                             ).generate(words) 
             
-            # plot the WordCloud image                        
-            plt.figure(figsize = (8, 8), facecolor = None) 
-            plt.imshow(wordcloud) 
-            plt.axis("off") 
-            plt.tight_layout(pad = 0)
+            # plot the WordCloud image
+            self.figsize = self.__set_figsize(self.kwargs.get('figsize'))
+            #check if param figsize exist
+            if self.figsize is not None:
+                plt.figure(figsize = self.figsize, facecolor = None) 
+                plt.imshow(wordcloud) 
+                plt.axis("off") 
+                plt.tight_layout(pad = 0)
+            else:                 
+                plt.figure(figsize = (8, 8), facecolor = None) 
+                plt.imshow(wordcloud) 
+                plt.axis("off") 
+                plt.tight_layout(pad = 0)
+
+    @staticmethod
+    def __set_figsize(figsize_input):
+        """
+        Setter of figsize based on figsize input for matplotlib chart
+
+        Parameters:
+            (tuple) figsize_input: The figsize input
+
+        Returns:
+            (tuple) figsize: The result figsize  
+        """
+        figsize = None
+        is_numeric_value = None
+
+        try:
+            if figsize_input is not None and len(figsize_input) == 2:
+                is_numeric_value = all(isinstance(v, int) or isinstance(v, float) for v in figsize_input)
+            else:
+                is_numeric_value = False
+        except:
+            is_numeric_value = False
+            
+        if is_numeric_value:
+            figsize = figsize_input
+        else:
+            figsize = None
+
+        return figsize
