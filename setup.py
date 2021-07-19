@@ -21,11 +21,18 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md'), encoding='utf-8'
 setup(
     name='VizKG',
     packages=['VizKG', 'VizKG.charts', 'VizKG.utils'],
-    version='1.0.1',
+    version='1.0.2',
     description='Visualization library for SPARQL query results',
     long_description=long_description,
     long_description_content_type="text/markdown",
+    url="https://github.com/fadirra/vizkg",
     author='Hana',
     install_requires=install_reqs,
     license='MIT',
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent"
+    ],
+    python_requires='>=3.7'
 )

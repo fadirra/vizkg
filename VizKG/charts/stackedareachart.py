@@ -46,9 +46,9 @@ class StackedAreaChart(Chart):
         date_label = None
         numerical_column = None
 
-        if self._is_date_column_exist(1):
+        if self._is_var_exist(self._date_column, 1):
             date_label = self._date_column[0]
-            if self._is_numerical_column_exist(1):
+            if self._is_var_exist(self._numerical_column, 1):
                 numerical_column = self._numerical_column
         
         return date_label, numerical_column          
@@ -65,6 +65,40 @@ class StackedAreaChart(Chart):
             dataframe = self.dataframe.copy()
             dataframe = dataframe.set_index(date_label)
             #plot
-            ax = dataframe.plot.area(stacked=True, figsize=(15,10))
-            plt.show(block=True)
+            self.figsize = self.__set_figsize(self.kwargs.get('figsize'))
+            #check if param figsize exist
+            if self.figsize is not None:
+                ax = dataframe.plot.area(stacked=True, figsize=self.figsize)
+                plt.show(block=True)
+            else:
+                ax = dataframe.plot.area(stacked=True, figsize=(15,10))
+                plt.show(block=True)
 
+    @staticmethod
+    def __set_figsize(figsize_input):
+        """
+        Setter of figsize based on figsize input for matplotlib chart
+
+        Parameters:
+            (tuple) figsize_input: The figsize input
+
+        Returns:
+            (tuple) figsize: The result figsize  
+        """
+        figsize = None
+        is_numeric_value = None
+
+        try:
+            if figsize_input is not None and len(figsize_input) == 2:
+                is_numeric_value = all(isinstance(v, int) or isinstance(v, float) for v in figsize_input)
+            else:
+                is_numeric_value = False
+        except:
+            is_numeric_value = False
+            
+        if is_numeric_value:
+            figsize = figsize_input
+        else:
+            figsize = None
+
+        return figsize

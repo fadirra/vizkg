@@ -38,9 +38,9 @@ class RadarChart(Chart):
         label_name = None
         numerical_column = None
         
-        if self._is_numerical_column_exist(3):
+        if self._is_var_exist(self._numerical_column, 3):
             numerical_column = self._numerical_column
-            if self._is_label_column_exist(1):
+            if self._is_var_exist(self._label_column, 1):
                 label_name = self._label_column[0]
         
         return label_name, numerical_column    

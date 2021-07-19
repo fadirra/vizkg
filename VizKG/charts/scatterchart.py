@@ -37,7 +37,7 @@ class ScatterChart(Chart):
         numerical_columns = None
         label_name = None
 
-        if self._is_numerical_column_exist(2):
+        if self._is_var_exist(self._numerical_column, 2):
             numerical_columns = self._numerical_column
             if len(self._label_column) > 0:
                 label_name = self._label_column[0]

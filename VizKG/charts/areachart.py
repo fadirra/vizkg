@@ -39,9 +39,9 @@ class AreaChart(Chart):
         int_label = None
         label_name = None
 
-        if self._is_date_column_exist(1):
+        if self._is_var_exist(self._date_column, 1):
             date_label = self._date_column[0]
-            if self._is_numerical_column_exist(1):
+            if self._is_var_exist(self._numerical_column, 1):
                 int_label = self._numerical_column[0]
                 if self._is_var_exist(self._label_column, 1):
                     label_name = self._label_column[0]

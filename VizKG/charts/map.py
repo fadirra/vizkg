@@ -26,7 +26,7 @@ class Map(Chart):
             (list) popup_data: list of label name
         """
         popup_data = None
-        if self._is_coordinate_exist(1):
+        if self._is_var_exist(self._coordinate_column, 1):
             new_data = self._add_point()
             if len(self._label_column) == 0:
                 popup_data = new_data.coordinate_point
@@ -42,7 +42,7 @@ class Map(Chart):
         """
         Generate Image Grid visualization
         """
-        if self._is_coordinate_exist(1):
+        if self._is_var_exist(self._coordinate_column, 1):
             self.draw_map()
         else:
             pass

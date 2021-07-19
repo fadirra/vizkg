@@ -2,7 +2,6 @@ from .chart import Chart
 import matplotlib.pyplot as plt
 from imageio import imread
 import time
-import warnings
 
 class ImageGrid(Chart):
     def __init__(self, dataframe, kwargs):
@@ -28,7 +27,7 @@ class ImageGrid(Chart):
             (list) label_name: list of image label
         """
         label_name = None
-        if self._is_img_uri_column_exist(1):
+        if self._is_var_exist(self._img_column, 1):
             if len(self._label_column) > 0:
                 label_name = self._label_column[0]
             else:
@@ -42,7 +41,7 @@ class ImageGrid(Chart):
         """
         Generate Image Grid visualization
         """
-        if self._is_img_uri_column_exist(1):
+        if self._is_var_exist(self._img_column, 1):
             self.draw_imagegrid()
         else:
             pass
@@ -74,7 +73,7 @@ class ImageGrid(Chart):
                 except ValueError:
                     pass
                 except:
-                    time.sleep(5)
+                    time.sleep(2)
                     image = imread(url)
                     plt.title(item_label[i])
                     plt.imshow(image) #, plt.xticks([]), plt.yticks([])
@@ -90,7 +89,7 @@ class ImageGrid(Chart):
                 except ValueError:
                     pass
                 except:
-                    time.sleep(5)
+                    time.sleep(2)
                     image = imread(url)
                     plt.imshow(image) #, plt.xticks([]), plt.yticks([])
                     plt.axis('off')    
