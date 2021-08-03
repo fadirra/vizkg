@@ -50,7 +50,6 @@ class Chart():
         """
         Get label column name of dataframe based on 'string' dtypes 
             with excluded uri, image url and coordinate column
-            and sort based on unique value
 
         :return: (list) label_column: list of label column        
         """
@@ -58,14 +57,9 @@ class Chart():
         
         #exclude uri, image url, coordinate column
         excluded_column = self._uri_column + self._img_column + self._coordinate_column + self._numerical_column + self._date_column
-        label_column = list(set(str_column) - set(excluded_column))
+        label_column = [i for i in str_column + excluded_column if i not in str_column or i not in excluded_column]
 
-        #sort based on unique value (ASC)
-        unique_dict = {name:len(self.dataframe[name].unique()) for name in (label_column)}
-        sort_dict = {k: v for k, v in sorted(unique_dict.items(), key=lambda item: item[1])}
-
-        sorted_label_column = list(sort_dict.keys())
-        return sorted_label_column
+        return label_column
 
     def _set_item_and_categorical(self):
         """

@@ -43,10 +43,19 @@ class Graph(Chart):
             if len(self._uri_column) > len(self._label_column):
                 filter_column = self._uri_column
             else:
-                filter_column = self._label_column
+                filter_column = self._sort_label_column(self._label_column)
                 is_label_column = True
         
         return filter_column, is_label_column      
+
+    def _sort_label_column(self, label_column):
+        #sort based on unique value (ASC)
+        unique_dict = {name:len(self.dataframe[name].unique()) for name in (label_column)}
+        sort_dict = {k: v for k, v in sorted(unique_dict.items(), key=lambda item: item[1])}
+
+        sorted_label_column = list(sort_dict.keys())
+
+        return sorted_label_column
 
     def draw(self):
         """
