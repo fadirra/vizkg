@@ -4,7 +4,7 @@
 [![PyPI Version](https://img.shields.io/pypi/v/VizKG.svg)](https://pypi.org/project/VizKG)
 [![PyPI License](https://img.shields.io/pypi/l/VizKG.svg)](https://github.com/fadirra/vizkg/blob/main/LICENSE)
 
-Visualization library for SPARQL query results
+VizKG, a visualization library for SPARQL query results over KGs. VizKG links SPARQL query results and external visualization libraries by [mapping](https://bit.ly/VizKG-MappingRules) query variables to the visualization components needed, currently allowing for 24 types of visualizations. Not only that, VizKG also provides visualization recommendations for arbitrary SPARQL query result. 
 
 ## Installation
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install VizKG.

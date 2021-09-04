@@ -21,12 +21,13 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md'), encoding='utf-8'
 setup(
     name='VizKG',
     packages=['VizKG', 'VizKG.charts', 'VizKG.utils'],
-    version='1.0.3',
+    version='1.0.6',
     description='Visualization library for SPARQL query results',
     long_description=long_description,
     long_description_content_type="text/markdown",
     project_urls = {
-    "Source Code": "https://github.com/fadirra/vizkg"
+    "Source Code": "https://github.com/fadirra/vizkg",
+    "Demo" : "https://www.youtube.com/watch?v=i0dd_-PRxlI"
     },
     author='Hana',
     install_requires=install_reqs,

@@ -61,7 +61,7 @@ class VizKGTestCase(unittest.TestCase):
 
     def test_label_column(self):
         label_column = self.chart._label_column
-        exp_label_column = ["itemLabel", "propLabel", "linkToLabel"]
+        exp_label_column = ["itemLabel", "linkToLabel", "propLabel"]
         self.assertListEqual(label_column, exp_label_column)
 
     def test_img_column(self):
