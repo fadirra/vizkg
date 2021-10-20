@@ -104,26 +104,44 @@ chart.plot()
 ![BudayaKB:Number of Temples by Indonesian Regencies](https://raw.githubusercontent.com/fadirra/vizkg/main/images/VizKG-Budaya%20KB_Number%20of%20temple%20in%20Indonesia.png)
 
 ## Supported Visualizations
-- Table
+- Table             
 - ImageGrid
 - Map
-- Tree
-- Timeline
-- Dimensions
 - Graph
+- Tree
+- Dimensions
+- Timeline
 - WordCloud
-- Tree Map
-- SunBurst Chart
-- Line Chart
-- Bar Chart
-- Area Chart
-- StackedArea Chart
 - Histogram
 - Density Plot
 - Box Plot
 - Violin Plot
+- Line Chart
+- Bar Chart
+- Area Chart
+- Stacked Area Chart
 - Bubble Chart
 - Scatter Chart
 - HeatMap
 - Radar Chart
+- Tree Map
+- SunBurst Chart
+- Pie Chart
+- Donut Chart
 
+## Related Work
+
+| Tool                                                                    | Framework      | Data Source      | Input Type                          | Number of Chart Types   |
+| :---                                                                    |     :---:      |     :---:        |     :---:                           |     :---:     |
+|[Wikidata Query Service](https://query.wikidata.org/)                    | Web-based      | Wikidata only    |  SPARQL SELECT                      | 14    |
+|[Dataviz](https://dataviz.toolforge.org/)                                | Web-based      | Wikidata only    |  SPARQL SELECT                      | 23    |
+|[YASGUI](https://yasgui.triply.cc/)                                      | Web-based      | Generic          |  SPARQL SELECT and SPARQL CONSTRUCT | 11    |
+|[LDVizWiz](http://semantics.eurecom.fr/datalift/rdfViz/apps/)            | Web-based      | Generic          |  SPARQL SELECT/ASK and RDF Data     | 27    |
+|[Sparklis](http://www.irisa.fr/LIS/ferre/sparklis/)                      | Web-based      | Generic          |  Text                               | 4    |
+|[Quedi](https://link.springer.com/chapter/10.1007%2F978-3-030-59833-4_5) | Web-based      | Generic          |  Text                               | 16    |
+|[Voyager](https://vega.github.io/voyager/)                               | Web-based      | Generic          |  Tabular Data                       | 5    |
+|[S-Paths](http://s-paths.lri.fr/)                                        | Web-based      | Generic          |  RDF Data                           | 10    |
+|[Gastrodon](https://github.com/paulhoule/gastrodon)                      | Python Library | Generic          |  RDF Data                           | -    |
+|[kglab](https://github.com/DerwenAI/kglab)                               | Python Library | Generic          |  RDF Data                           | 1    |
+|[Autoviz](https://pypi.org/project/autoviz/)                             | Python Library | Generic          |  Tabular Data                       | 5    |
+|[Visualizer](https://pypi.org/project/visualizer/)                       | Python Library | Generic          |  Tabular Data                       | 20    |
