@@ -131,7 +131,7 @@ chart.plot()
 
 ## Related Work
 
-| Tool                                                                    | Framework      | Data Source      | Input Type                          | Number of Chart Type   |
+| Tool                                                                    | Framework      | Data Source      | Input Type                          | Number of Chart Types   |
 | :---                                                                    |     :---:      |     :---:        |     :---:                           |     :---:     |
 |[Wikidata Query Service](https://query.wikidata.org/)                    | Web-based      | Wikidata only    |  SPARQL SELECT                      | 14    |
 |[Dataviz](https://dataviz.toolforge.org/)                                | Web-based      | Wikidata only    |  SPARQL SELECT                      | 23    |
