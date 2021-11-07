@@ -20,6 +20,48 @@ pip install VizKG
 import VizKG.visualize as vkg
 ```
 
+### Visualization Recommendation 
+
+VizKG returns the automated visualization when there is no chart type preference given.
+
+```python
+#Wikidata: Covid-19 Recoveries, Cases, and Death Growth
+sparql_query = """
+SELECT ?time ?Recoveries ?Cases ?Deaths WHERE {
+  {
+    SELECT ?time ?Recoveries WHERE {
+      wd:Q84263196 p:P8010 ?countRes .
+      FILTER NOT EXISTS { ?countRes pq:P276 ?loc }
+      ?countRes ps:P8010 ?Recoveries ;
+                   pq:P585 ?time .
+    }
+  } 
+  {
+    SELECT ?time ?Cases WHERE {
+      wd:Q84263196 p:P1603 ?countRes .
+      FILTER NOT EXISTS { ?countRes pq:P276 ?loc }
+       ?countRes ps:P1603 ?Cases ;
+                   pq:P585 ?time .
+    }
+  } 
+  {
+    SELECT ?time ?Deaths WHERE {
+      wd:Q84263196 p:P1120 ?countRes .
+      FILTER NOT EXISTS { ?countRes pq:P276 ?loc }
+       ?countRes ps:P1120 ?Deaths ;
+                   pq:P585 ?time .
+    }
+  }
+}
+"""
+sparql_service_url = "https://query.wikidata.org/sparql"
+chart = vkg(sparql_query=sparql_query, sparql_service_url=sparql_service_url)
+chart.plot()
+```
+![WD:COVID-19 Growth](https://raw.githubusercontent.com/fadirra/vizkg/main/images/VizKG-Wikidata_%20Covid19%20Recoveries%2C%20Cases%2C%20and%20Death%20Growth.png)
+
+## Use Case Examples
+
 ### Wikidata: COVID-19 Vaccine Origins
 ```python
 sparql_query = """
