@@ -34,13 +34,15 @@ def set_chart(chart_input):
 
     return chart
 
-def set_dataframe(sparql_query, sparql_endpoint):
+def set_dataframe(sparql_query, sparql_endpoint, user, passwd):
     """
     Query the endpoint with the given query string and format the result table
 
     Parameters:
         (string) sparql_query: The sparql query.
         (string) sparql_endpoint: The sparql endpoint
+        (string) user: The sparql endpoint basic authentication user
+        (string) passwd: The sparql endpoint basic authentication password
 
     Returns:
         (pandas.Dataframe) result_table: The table of result    
@@ -50,6 +52,8 @@ def set_dataframe(sparql_query, sparql_endpoint):
 
     sparql.setQuery(sparql_query)
     sparql.setReturnFormat('json')
+    if user != None:
+        sparql.setCredentials(user, passwd)
 
     results = sparql.query().convert()
     table  = json_normalize(results["results"]["bindings"])
