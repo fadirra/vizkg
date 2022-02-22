@@ -21,7 +21,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md'), encoding='utf-8'
 setup(
     name='VizKG',
     packages=['VizKG', 'VizKG.charts', 'VizKG.utils'],
-    version='1.0.8',
+    version='1.0.9',
     description='Visualization library for SPARQL query results',
     long_description=long_description,
     long_description_content_type="text/markdown",

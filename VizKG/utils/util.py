@@ -4,6 +4,8 @@ import importlib, inspect
 from pandas import json_normalize
 from SPARQLWrapper import SPARQLWrapper
 from difflib import SequenceMatcher
+import ssl
+
 from .chartdict import chartdict as chart_dictionary
 
 def set_chart(chart_input):
@@ -53,6 +55,7 @@ def set_dataframe(sparql_query, sparql_endpoint, user, passwd):
     sparql.setQuery(sparql_query)
     sparql.setReturnFormat('json')
     if user != None:
+        ssl._create_default_https_context = ssl._create_unverified_context
         sparql.setCredentials(user, passwd)
 
     results = sparql.query().convert()

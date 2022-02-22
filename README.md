@@ -6,6 +6,9 @@
 
 VizKG, a visualization library for SPARQL query results over KGs. VizKG links SPARQL query results and external visualization libraries by [mapping](https://bit.ly/VizKG-MappingRules) query variables to the visualization components needed, currently allowing for 24 types of visualizations. Not only that, VizKG also provides visualization recommendations for arbitrary SPARQL query result. 
 
+### Update feature v.1.0.9
+VizKG now features SPARQL endpoint access with basic authentication where users can use the feature at their own risk. The purpose of VizKG is for **educational only**.
+
 ## Installation
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install VizKG.
 
@@ -187,3 +190,7 @@ chart.plot()
 |[kglab](https://github.com/DerwenAI/kglab)                               | Python Library | Generic          |  RDF Data                           | 1    |
 |[Autoviz](https://pypi.org/project/autoviz/)                             | Python Library | Generic          |  Tabular Data                       | 5    |
 |[Visualizer](https://pypi.org/project/visualizer/)                       | Python Library | Generic          |  Tabular Data                       | 20    |
+
+## Code Contributors
+
+This project exists thanks to all the people who contribute.
