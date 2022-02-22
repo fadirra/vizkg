@@ -21,22 +21,26 @@ class VizKG:
       **figsize (float, float): Width, height in inches of matplotlib plot 
   """
 
-  def __init__(self, sparql_query, sparql_service_url, chart=None, **kwargs):
+  def __init__(self, sparql_query, sparql_service_url, user=None, passwd=None, chart=None, **kwargs):
       """
       Constructs all the necessary attributes for the vizKG object
 
       Parameters:
           sparql_query (string): The SPARQL query to retrieve.
           sparql_service_url (string): The SPARQL endpoint URL.
+          user (string): The sparql endpoint basic authentication user
+          passwd (string): The sparql endpoint basic authentication password
           chart (string): Type of visualization
       """
 
       self.sparql_query = sparql_query
       self.sparql_service_url = sparql_service_url
+      self.user = user
+      self.passwd = passwd
       self.chart = set_chart(chart)
       self.kwargs = kwargs
 
-      self.__data = set_dataframe(sparql_query, sparql_service_url)
+      self.__data = set_dataframe(sparql_query, sparql_service_url, user, passwd)
       self.__candidate_visualization = self.__find_candidate()
       self.dataframe = self.__data
       self.candidate_visualization = self.__candidate_visualization     
